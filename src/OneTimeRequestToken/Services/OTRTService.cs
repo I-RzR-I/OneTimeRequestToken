@@ -27,6 +27,7 @@ using Microsoft.Extensions.Logging;
 using OneTimeRequestToken.Abstractions;
 using OneTimeRequestToken.Extensions;
 using OneTimeRequestToken.Helpers;
+using OneTimeRequestToken.Helpers.InternalInfo;
 using OneTimeRequestToken.Models.Internal;
 using System;
 using System.Threading;
@@ -122,18 +123,20 @@ namespace OneTimeRequestToken.Services
             }
             catch (Exception e)
             {
-                _logger.LogError(e, DefaultMessages.ErrorOnTokenGeneration);
+                _logger.LogError(e, DefaultMessagesInfo.ErrorOnTokenGeneration);
 
-                return Result<GenerateTokenResultDto>.Failure(DefaultMessages.ErrorOnTokenGeneration);
+                return Result<GenerateTokenResultDto>.Failure(DefaultMessagesInfo.ErrorOnTokenGeneration);
             }
         }
 
         /// <inheritdoc />
-        public async Task<IResult> ValidateTokenAsync(string token, string httpMethod, CancellationToken cancellationToken = default)
+        public async Task<IResult> ValidateTokenAsync(string token, string httpMethod, string requestPath = null, CancellationToken cancellationToken = default)
         {
             try
             {
-                var requestPath = _httpContextAccessor.HttpContext?.Request.Path;
+                var localRequestPath = requestPath.IsNullOrEmpty() 
+                    ? _httpContextAccessor.HttpContext?.Request.Path.ToString() 
+                    : requestPath;
                 if (httpMethod.IsNullOrEmpty().IsFalse())
                 {
                     var cacheToken = _memoryCache.Get<string>(token);
@@ -144,16 +147,16 @@ namespace OneTimeRequestToken.Services
                             .AesDecryptString(OTRTInfo.GetAppKey()).Split('|');
 
                         if (Convert.ToDateTime(sourceHeaderToken[0]).IsTokenValid().IsFalse())
-                            return await Task.FromResult(Result.Failure(DefaultMessages.ErrorInvalidToken));
+                            return await Task.FromResult(Result.Failure(DefaultMessagesInfo.ErrorInvalidToken));
 
-                        var encryptedClientToken = await BuildClientTokenAsync(requestPath, httpMethod);
+                        var encryptedClientToken = await BuildClientTokenAsync(localRequestPath, httpMethod);
 
                         var cachedTokenDecrypt = cacheToken.AesDecryptString(OTRTInfo.GetAppKey()).Split('|');
                         var tokenDataDecrypt = encryptedClientToken.ClearToken.AesDecryptString(OTRTInfo.GetAppKey()).Split('|');
 
                         if (RequestTokenHelper.IsValidRequest(cachedTokenDecrypt, tokenDataDecrypt, sourceHeaderToken).IsFalse())
                         {
-                            return await Task.FromResult(Result.Failure(DefaultMessages.ErrorInvalidTokenData));
+                            return await Task.FromResult(Result.Failure(DefaultMessagesInfo.ErrorInvalidTokenData));
                         }
 
                         //Remove from cache key
@@ -162,16 +165,16 @@ namespace OneTimeRequestToken.Services
                         return await Task.FromResult(Result.Success());
                     }
 
-                    return await Task.FromResult(Result.Failure(DefaultMessages.ErrorTokenNotFound));
+                    return await Task.FromResult(Result.Failure(DefaultMessagesInfo.ErrorTokenNotFound));
                 }
 
-                return await Task.FromResult(Result.Failure(DefaultMessages.ErrorNotHttpPostOrInvalid));
+                return await Task.FromResult(Result.Failure(DefaultMessagesInfo.ErrorNotHttpPostOrInvalid));
             }
             catch (Exception e)
             {
-                _logger.LogError(e, DefaultMessages.ErrorOnTokenValidation);
+                _logger.LogError(e, DefaultMessagesInfo.ErrorOnTokenValidation);
 
-                return Result.Failure(DefaultMessages.ErrorOnTokenValidation);
+                return Result.Failure(DefaultMessagesInfo.ErrorOnTokenValidation);
             }
         }
 
@@ -205,9 +208,9 @@ namespace OneTimeRequestToken.Services
             }
             catch (Exception e)
             {
-                _logger.LogError(e, DefaultMessages.ErrorOnBuildHeaderToken);
+                _logger.LogError(e, DefaultMessagesInfo.ErrorOnBuildHeaderToken);
 
-                throw new Exception(DefaultMessages.ErrorOnBuildHeaderToken);
+                throw new Exception(DefaultMessagesInfo.ErrorOnBuildHeaderToken);
             }
         }
 
@@ -245,9 +248,9 @@ namespace OneTimeRequestToken.Services
             }
             catch (Exception e)
             {
-                _logger.LogError(e, DefaultMessages.ErrorOnBuildClientToken);
+                _logger.LogError(e, DefaultMessagesInfo.ErrorOnBuildClientToken);
 
-                throw new Exception(DefaultMessages.ErrorOnBuildClientToken);
+                throw new Exception(DefaultMessagesInfo.ErrorOnBuildClientToken);
             }
         }
     }
