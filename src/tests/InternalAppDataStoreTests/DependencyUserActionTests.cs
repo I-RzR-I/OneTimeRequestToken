@@ -45,8 +45,8 @@ namespace InternalAppDataStoreTests
             Assert.AreEqual("UserName", await OTRTInfo.GetUserNameFunction().Invoke());
         }
 
-        private async Task<object> UserIdFuncAsync() => await Task.FromResult(1);
+        private async Task<int> UserIdFuncAsync() => await Task.FromResult(1);
 
-        private async Task<object> UserNameFuncAsync() => await Task.FromResult("UserName");
+        private async Task<string> UserNameFuncAsync() => await Task.FromResult("UserName");
     }
 }

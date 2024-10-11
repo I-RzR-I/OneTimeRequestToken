@@ -27,7 +27,7 @@ namespace OneTimeRequestToken.Models.Internal
     ///     A generate token result data transfer object.
     /// </summary>
     /// =================================================================================================
-    [DataContract]
+    [DataContract(Name = "GenerateTokenResult")]
     public class GenerateTokenResultDto
     {
         /// -------------------------------------------------------------------------------------------------
@@ -38,7 +38,7 @@ namespace OneTimeRequestToken.Models.Internal
         ///     The name of the token header.
         /// </value>
         /// =================================================================================================
-        [DataMember]
+        [DataMember(Name = "TokenHeaderName")]
         public string TokenHeaderName { get; set; }
 
         /// -------------------------------------------------------------------------------------------------
@@ -49,7 +49,7 @@ namespace OneTimeRequestToken.Models.Internal
         ///     The token header value.
         /// </value>
         /// =================================================================================================
-        [DataMember]
+        [DataMember(Name = "TokenHeaderValue")]
         public string TokenHeaderValue { get; set; }
 
         /// -------------------------------------------------------------------------------------------------

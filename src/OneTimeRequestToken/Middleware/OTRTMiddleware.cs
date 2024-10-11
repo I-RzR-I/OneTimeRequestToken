@@ -22,7 +22,9 @@ using Microsoft.Extensions.Logging;
 using OneTimeRequestToken.Abstractions;
 using OneTimeRequestToken.Extensions.Http;
 using OneTimeRequestToken.Helpers;
+using OneTimeRequestToken.Helpers.InternalInfo;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -93,7 +95,12 @@ namespace OneTimeRequestToken.Middleware
                 if (string.Equals(context.Request.Method, HttpMethods.Get, StringComparison.CurrentCultureIgnoreCase).IsFalse()
                     || (string.Equals(context.Request.Method, HttpMethods.Get, StringComparison.CurrentCultureIgnoreCase) && xsrfToken.IsPresent()))
                 {
-                    var isInExcluded = OTRTInfo.GetExcludedPaths().Any(x => x.StartsWith(context.Request.Path.Value!));
+                    // Add internal endpoints to the excluded paths
+                    var excludedPaths = new List<string>() { EndpointPathInfo.GetTokenPath, EndpointPathInfo.VerifyTokenPath };
+                    // Add user defined endpoints to the excluded paths
+                    excludedPaths.AddRange(OTRTInfo.GetExcludedPaths());
+                    
+                    var isInExcluded = excludedPaths.Any(x => x.StartsWith(context.Request.Path.Value!));
                     if (isInExcluded.Equals(false))
                     {
                         if (xsrfToken.IsNullOrEmpty().IsFalse())
@@ -113,7 +120,7 @@ namespace OneTimeRequestToken.Middleware
             }
             catch (Exception e)
             {
-                _logger.LogError(e, DefaultMessages.ErrorOnTokenValidation);
+                _logger.LogError(e, DefaultMessagesInfo.ErrorOnTokenValidation);
             }
             finally
             {

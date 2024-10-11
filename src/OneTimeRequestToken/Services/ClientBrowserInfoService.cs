@@ -75,8 +75,8 @@ namespace OneTimeRequestToken.Services
             var xForwardFor = _httpContextAccessor.HttpContext?.Request.Headers["X-Forwarded-For"].ToString();
             var xForwardIp = _httpContextAccessor.HttpContext?.Request.Headers["X-Forwarded-IP"].ToString();
 
-            var clientIp = string.IsNullOrEmpty(xForwardFor)
-                ? string.IsNullOrEmpty(xForwardIp)
+            var clientIp = xForwardFor.IsNullOrEmpty()
+                ? xForwardIp.IsNullOrEmpty()
                     ? ip
                     : xForwardIp
                 : xForwardFor;
