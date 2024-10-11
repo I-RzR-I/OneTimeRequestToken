@@ -91,14 +91,14 @@ namespace OneTimeRequestToken.Middleware
             var originalBody = context.Request.Body;
             try
             {
-                var xsrfToken = context.Request.Headers[OTRTInfo.GetOTRTHeaderVariableName()].ToString();
+                var xsrfToken = context.Request.Headers[OTRTAppInfo.GetOTRTHeaderVariableName()].ToString();
                 if (string.Equals(context.Request.Method, HttpMethods.Get, StringComparison.CurrentCultureIgnoreCase).IsFalse()
                     || (string.Equals(context.Request.Method, HttpMethods.Get, StringComparison.CurrentCultureIgnoreCase) && xsrfToken.IsPresent()))
                 {
                     // Add internal endpoints to the excluded paths
                     var excludedPaths = new List<string>() { EndpointPathInfo.GetTokenPath, EndpointPathInfo.VerifyTokenPath };
                     // Add user defined endpoints to the excluded paths
-                    excludedPaths.AddRange(OTRTInfo.GetExcludedPaths());
+                    excludedPaths.AddRange(OTRTAppInfo.GetExcludedPaths());
                     
                     var isInExcluded = excludedPaths.Any(x => x.StartsWith(context.Request.Path.Value!));
                     if (isInExcluded.Equals(false))

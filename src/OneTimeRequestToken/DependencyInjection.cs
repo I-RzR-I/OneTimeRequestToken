@@ -83,7 +83,7 @@ namespace OneTimeRequestToken
             Action<OTRTOptions> serviceOptions, Func<Task<object>> userIdentifierFunction, Func<Task<object>> userNameFunction)
         {
             serviceCollection.RegisterBaseServices(serviceOptions);
-            OTRTInfo.SetFunctions(userIdentifierFunction, userNameFunction);
+            OTRTAppInfo.SetFunctions(userIdentifierFunction, userNameFunction);
 
             return serviceCollection;
         }
@@ -149,16 +149,16 @@ namespace OneTimeRequestToken
             if (options.AppKey.IsNullOrEmpty())
                 throw new ArgumentNullException(nameof(options.AppKey));
 
-            OTRTInfo.SetAppKey(options.AppKey);
+            OTRTAppInfo.SetAppKey(options.AppKey);
 
             if (options.AppName.IsNullOrEmpty().IsFalse())
-                OTRTInfo.SetCurrentAppName(options.AppName);
+                OTRTAppInfo.SetCurrentAppName(options.AppName);
 
             if (options.ExcludedPaths.IsNullOrEmptyEnumerable().IsFalse())
-                OTRTInfo.SetExcludedPaths(options.ExcludedPaths);
+                OTRTAppInfo.SetExcludedPaths(options.ExcludedPaths);
 
             if (options.TokenValidTime.IsNotNull())
-                OTRTInfo.SetTokenValidTime(options.TokenValidTime);
+                OTRTAppInfo.SetTokenValidTime(options.TokenValidTime);
         }
     }
 }

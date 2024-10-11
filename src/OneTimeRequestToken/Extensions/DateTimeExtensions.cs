@@ -43,7 +43,7 @@ namespace OneTimeRequestToken.Extensions
         internal static bool IsTokenValid(this DateTime sourceDate)
         {
             var currentDateTimeUtc = DateTime.Now.AsUtc();
-            var tokenValidTime = OTRTInfo.GetTokenValidTime();
+            var tokenValidTime = OTRTAppInfo.GetTokenValidTime();
 
             if (currentDateTimeUtc > sourceDate && currentDateTimeUtc <= sourceDate.Add(tokenValidTime)) 
                 return true;

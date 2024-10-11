@@ -119,7 +119,7 @@ namespace OneTimeRequestToken.Services
                 //Return data to client
                 return await Task.FromResult(
                     Result<GenerateTokenResultDto>.Success(
-                        new GenerateTokenResultDto(OTRTInfo.GetOTRTHeaderVariableName(), encryptedHeaderTokenName.ResultToken)));
+                        new GenerateTokenResultDto(OTRTAppInfo.GetOTRTHeaderVariableName(), encryptedHeaderTokenName.ResultToken)));
             }
             catch (Exception e)
             {
@@ -143,16 +143,16 @@ namespace OneTimeRequestToken.Services
 
                     if (cacheToken.IsNullOrEmpty().IsFalse())
                     {
-                        var sourceHeaderToken = token.Replace(OTRTInfo.GetOTRTHeaderVariableNameValue(), string.Empty)
-                            .AesDecryptString(OTRTInfo.GetAppKey()).Split('|');
+                        var sourceHeaderToken = token.Replace(OTRTAppInfo.GetOTRTHeaderVariableNameValue(), string.Empty)
+                            .AesDecryptString(OTRTAppInfo.GetAppKey()).Split('|');
 
                         if (Convert.ToDateTime(sourceHeaderToken[0]).IsTokenValid().IsFalse())
                             return await Task.FromResult(Result.Failure(DefaultMessagesInfo.ErrorInvalidToken));
 
                         var encryptedClientToken = await BuildClientTokenAsync(localRequestPath, httpMethod);
 
-                        var cachedTokenDecrypt = cacheToken.AesDecryptString(OTRTInfo.GetAppKey()).Split('|');
-                        var tokenDataDecrypt = encryptedClientToken.ClearToken.AesDecryptString(OTRTInfo.GetAppKey()).Split('|');
+                        var cachedTokenDecrypt = cacheToken.AesDecryptString(OTRTAppInfo.GetAppKey()).Split('|');
+                        var tokenDataDecrypt = encryptedClientToken.ClearToken.AesDecryptString(OTRTAppInfo.GetAppKey()).Split('|');
 
                         if (RequestTokenHelper.IsValidRequest(cachedTokenDecrypt, tokenDataDecrypt, sourceHeaderToken).IsFalse())
                         {
@@ -193,16 +193,16 @@ namespace OneTimeRequestToken.Services
         {
             try
             {
-                var dayNumber = OTRTInfo.GetNumberOfDay();
-                var userIdentifierFunc = OTRTInfo.GetUserIdentifierFunction();
+                var dayNumber = OTRTAppInfo.GetNumberOfDay();
+                var userIdentifierFunc = OTRTAppInfo.GetUserIdentifierFunction();
                 var clientInfo = _clientBrowserInfoService.GetClientInfo();
 
                 var clientToken = RequestTokenHelper.BuildHeaderClientToken(DateTime.Now.AsUtc(),
                     userIdentifierFunc.IsNull() ? dayNumber : await userIdentifierFunc.Invoke(),
                     clientInfo.ClientIp, requestPath, httpMethod, clientInfo.ClientAgent);
 
-                var encryptToken = clientToken.AesEncryptString(OTRTInfo.GetAppKey());
-                var headerToken = $"{OTRTInfo.GetOTRTHeaderVariableNameValue()}{encryptToken}"; //.TruncateExactLength(dayNumber)
+                var encryptToken = clientToken.AesEncryptString(OTRTAppInfo.GetAppKey());
+                var headerToken = $"{OTRTAppInfo.GetOTRTHeaderVariableNameValue()}{encryptToken}"; //.TruncateExactLength(dayNumber)
 
                 return new TokenInfoDto(encryptToken, headerToken);
             }
@@ -229,20 +229,20 @@ namespace OneTimeRequestToken.Services
         {
             try
             {
-                var dayNumber = OTRTInfo.GetNumberOfDay();
+                var dayNumber = OTRTAppInfo.GetNumberOfDay();
                 var clientInfo = _clientBrowserInfoService.GetClientInfo();
 
-                var userIdentifierFunc = OTRTInfo.GetUserIdentifierFunction();
-                var userNameFunc = OTRTInfo.GetUserNameFunction();
+                var userIdentifierFunc = OTRTAppInfo.GetUserIdentifierFunction();
+                var userNameFunc = OTRTAppInfo.GetUserNameFunction();
 
                 var clientToken = RequestTokenHelper.BuildClientToken(DateTime.Now.AsUtc(),
                     userIdentifierFunc.IsNull() ? dayNumber : await userIdentifierFunc.Invoke(),
-                    userNameFunc.IsNull() ? $"{dayNumber}#{OTRTInfo.GetCurrentAppName()}" : await userNameFunc.Invoke(),
+                    userNameFunc.IsNull() ? $"{dayNumber}#{OTRTAppInfo.GetCurrentAppName()}" : await userNameFunc.Invoke(),
                     clientInfo.ClientIp, requestPath, httpMethod, clientInfo.ClientAgent
                 );
 
-                var encryptToken = clientToken.AesEncryptString(OTRTInfo.GetAppKey());
-                var clientEncToken = $"{OTRTInfo.GetOTRTHeaderVariableNameValueEnc()}{encryptToken}";
+                var encryptToken = clientToken.AesEncryptString(OTRTAppInfo.GetAppKey());
+                var clientEncToken = $"{OTRTAppInfo.GetOTRTHeaderVariableNameValueEnc()}{encryptToken}";
 
                 return new TokenInfoDto(encryptToken, clientEncToken);
             }
