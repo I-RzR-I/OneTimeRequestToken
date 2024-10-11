@@ -19,7 +19,7 @@
 using DomainCommonExtensions.CommonExtensions.TypeParam;
 using DomainCommonExtensions.DataTypeExtensions;
 using Microsoft.AspNetCore.Http;
-using OneTimeRequestToken.Helpers;
+using OneTimeRequestToken.Helpers.Serializer;
 using System.Threading.Tasks;
 
 #endregion
