@@ -14,7 +14,6 @@
 //  </summary>
 // ***********************************************************************
 
-using DomainCommonExtensions.CommonExtensions;
 using DomainCommonExtensions.CommonExtensions.TypeParam;
 using DomainCommonExtensions.DataTypeExtensions;
 using System;

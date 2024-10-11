@@ -1,12 +1,12 @@
 ﻿// ***********************************************************************
 //  Assembly         : RzR.Shared.Services.OneTimeRequestToken
 //  Author           : RzR
-//  Created On       : 2024-09-24 22:48
+//  Created On       : 2024-10-11 18:41
 // 
 //  Last Modified By : RzR
-//  Last Modified On : 2024-09-25 21:05
+//  Last Modified On : 2024-10-11 19:32
 // ***********************************************************************
-//  <copyright file="JsonObjectSerializer.cs" company="">
+//  <copyright file="XmlObjectSerializer.cs" company="">
 //   Copyright (c) RzR. All rights reserved.
 //  </copyright>
 // 
@@ -16,48 +16,57 @@
 
 #region U S A G E S
 
-using System.Text.Json;
-using System.Text.Json.Serialization;
+using System.IO;
+using System.Xml.Serialization;
 
 #endregion
 
-namespace OneTimeRequestToken.Helpers
+namespace OneTimeRequestToken.Helpers.Serializer
 {
     /// -------------------------------------------------------------------------------------------------
     /// <summary>
-    ///     An object for persisting JSON object data.
+    ///     An object for persisting XML object data.
     /// </summary>
     /// =================================================================================================
-    internal static class JsonObjectSerializer
+    internal static class XmlObjectSerializer
     {
-        /// -------------------------------------------------------------------------------------------------
-        /// <summary>
-        ///     (Immutable) options for controlling the operation.
-        /// </summary>
-        /// =================================================================================================
-        private static readonly JsonSerializerOptions Options = new JsonSerializerOptions { DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull };
-
-        /// -------------------------------------------------------------------------------------------------
-        /// <summary>
-        ///     Convert this object into a string representation.
-        /// </summary>
-        /// <param name="o">An object to process.</param>
-        /// <returns>
-        ///     A string that represents this object.
-        /// </returns>
-        /// =================================================================================================
-        public static string ToString(object o) => JsonSerializer.Serialize(o, Options);
-
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     Creates a new object from the given string.
         /// </summary>
         /// <typeparam name="T">Generic type parameter.</typeparam>
-        /// <param name="value">The value.</param>
+        /// <param name="serializedResult">The serialized result.</param>
         /// <returns>
         ///     A T.
         /// </returns>
         /// =================================================================================================
-        public static T FromString<T>(string value) => JsonSerializer.Deserialize<T>(value, Options);
+        internal static T FromString<T>(string serializedResult) where T : class
+        {
+            var ser = new XmlSerializer(typeof(T));
+
+            using var sr = new StringReader(serializedResult);
+
+            return (T)ser.Deserialize(sr);
+        }
+
+        /// -------------------------------------------------------------------------------------------------
+        /// <summary>
+        ///     Convert this object into a string representation.
+        /// </summary>
+        /// <typeparam name="T">Generic type parameter.</typeparam>
+        /// <param name="unSerializedResult">The un serialized result.</param>
+        /// <returns>
+        ///     UnSerializedResult as a string.
+        /// </returns>
+        /// =================================================================================================
+        internal static string ToString<T>(T unSerializedResult)
+        {
+            var xmlSerializer = new XmlSerializer(unSerializedResult.GetType());
+
+            using var textWriter = new StringWriter();
+            xmlSerializer.Serialize(textWriter, unSerializedResult);
+
+            return textWriter.ToString();
+        }
     }
 }
