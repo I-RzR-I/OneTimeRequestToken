@@ -24,7 +24,9 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using OneTimeRequestToken.Abstractions;
 using OneTimeRequestToken.Endpoints.GetOTRToken;
+using OneTimeRequestToken.Endpoints.VerifyOTRTToken;
 using OneTimeRequestToken.Helpers;
+using OneTimeRequestToken.Helpers.InternalInfo;
 using OneTimeRequestToken.Middleware;
 using OneTimeRequestToken.Models;
 using OneTimeRequestToken.Services;
@@ -121,7 +123,8 @@ namespace OneTimeRequestToken
             serviceCollection.AddMemoryCache();
 
             serviceCollection.RegisterEndpointHostBuilder();
-            serviceCollection.AddHostEndpoint<GetOTRTokenHandler>("GetOTRToken", "/otrt/token");
+            serviceCollection.AddHostEndpoint<GetOTRTokenHandler>("GetOTRToken", EndpointPathInfo.GetTokenPath);
+            serviceCollection.AddHostEndpoint<VerifyOTRTTokenHandler>("VerifyOTRTToken", EndpointPathInfo.VerifyTokenPath);
 
             serviceCollection.AddUnique<IClientBrowserInfoService, ClientBrowserInfoService>();
             serviceCollection.AddUnique<IOTRTService, OTRTService>();
