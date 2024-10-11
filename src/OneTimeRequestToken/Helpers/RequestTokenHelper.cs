@@ -71,7 +71,7 @@ namespace OneTimeRequestToken.Helpers
         /// </returns>
         /// =================================================================================================
         internal static string BuildHeaderClientToken(DateTime utcDate, object userIdentifier, string clientIp, string requestPath, string httpMethod, string agent)
-            => $"{utcDate}|{userIdentifier}{clientIp}|{requestPath}|{httpMethod.ToUpper()}{agent}";
+            => $"{utcDate}|{userIdentifier}|{clientIp}|{requestPath}|{httpMethod.ToUpper()}|{agent}";
 
         /// -------------------------------------------------------------------------------------------------
         /// <summary>

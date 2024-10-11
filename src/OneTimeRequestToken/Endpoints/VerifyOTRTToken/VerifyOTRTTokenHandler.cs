@@ -16,6 +16,7 @@
 
 #region U S A G E S
 
+using DomainCommonExtensions.CommonExtensions.TypeParam;
 using DomainCommonExtensions.DataTypeExtensions;
 using EndpointHostBinder.Abstractions;
 using Microsoft.AspNetCore.Http;
@@ -65,9 +66,9 @@ namespace OneTimeRequestToken.Endpoints.VerifyOTRTToken
                 return new StatusCodeResult(HttpStatusCode.MethodNotAllowed);
 
             if (context.Request.ContentLength.IsZero())
-                return new StatusCodeResult(HttpStatusCode.NoContent);
+                return new StatusCodeResult(HttpStatusCode.BadRequest);
 
-            if (AppContentTypeInfo.AllowedContentType.Any(x => x == context.Request.ContentType).IsFalse())
+            if (AppContentTypeInfo.AllowedContentType.Any(x => context.Request.ContentType.IfIsNull(string.Empty).Contains(x)).IsFalse())
                 return new StatusCodeResult(HttpStatusCode.BadRequest);
 
             return new VerifyOTRTTokenResult(_serviceProvider);

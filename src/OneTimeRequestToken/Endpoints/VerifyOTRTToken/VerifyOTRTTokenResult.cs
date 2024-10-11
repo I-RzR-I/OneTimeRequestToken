@@ -66,9 +66,9 @@ namespace OneTimeRequestToken.Endpoints.VerifyOTRTToken
                 ? JsonObjectSerializer.FromString<Models.VerifyOTRTToken>(body)
                 : XmlObjectSerializer.FromString<Models.VerifyOTRTToken>(body);
 
-            var requestPath = requestParam.RequestPath.TrimAndReduceSpace().ReplaceSpecialCharacters();
+            var requestPath = requestParam.RequestPath;
             var httpMethod = requestParam.HttpMethod.TrimAndReplaceSpecialCharacters().ReplaceSpecialCharacters();
-            var token = requestParam.Token.TrimAndReplaceSpecialCharacters().ReplaceSpecialCharacters();
+            var token = requestParam.Token;
 
             var isValid = await _otrtService.ValidateTokenAsync(token, httpMethod, requestPath);
 
