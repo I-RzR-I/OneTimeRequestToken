@@ -1,12 +1,12 @@
 ﻿// ***********************************************************************
 //  Assembly         : RzR.Shared.Services.OneTimeRequestToken
 //  Author           : RzR
-//  Created On       : 2024-09-23 19:37
+//  Created On       : 2024-09-25 18:08
 // 
 //  Last Modified By : RzR
-//  Last Modified On : 2024-09-23 22:35
+//  Last Modified On : 2024-09-25 18:08
 // ***********************************************************************
-//  <copyright file="IClientBrowserInfoService.cs" company="">
+//  <copyright file="TokenInfo.cs" company="">
 //   Copyright (c) RzR. All rights reserved.
 //  </copyright>
 // 
@@ -14,50 +14,46 @@
 //  </summary>
 // ***********************************************************************
 
-#region U S A G E S
-
-using OneTimeRequestToken.Models;
-
-
-#endregion
-
-namespace OneTimeRequestToken.Abstractions
+namespace OneTimeRequestToken.Models.Internal
 {
     /// -------------------------------------------------------------------------------------------------
     /// <summary>
-    ///     Interface for client browser information service.
+    ///     A token information data transfer object.
     /// </summary>
     /// =================================================================================================
-    public interface IClientBrowserInfoService
+    internal class TokenInfo
     {
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
-        ///     Get user real IP.
+        ///     Gets or sets the clear token.
         /// </summary>
-        /// <returns>
-        ///     The client IP.
-        /// </returns>
+        /// <value>
+        ///     The clear token.
+        /// </value>
         /// =================================================================================================
-        string GetClientIp();
+        public string ClearToken { get; set; }
 
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
-        ///     Gets user client (browser) info.
+        ///     Gets or sets the result token.
         /// </summary>
-        /// <returns>
-        ///     The client information.
-        /// </returns>
+        /// <value>
+        ///     The result token.
+        /// </value>
         /// =================================================================================================
-        ClientInfo GetClientInfo();
+        public string ResultToken { get; set; }
 
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
-        ///     Get client platform.
+        ///     Initializes a new instance of the <see cref="TokenInfo"/> class.
         /// </summary>
-        /// <returns>
-        ///     The client platform.
-        /// </returns>
+        /// <param name="clearToken">The clear token.</param>
+        /// <param name="resultToken">The result token.</param>
         /// =================================================================================================
-        string GetClientPlatform();
+        public TokenInfo(string clearToken, string resultToken)
+        {
+            ClearToken = clearToken;
+            ResultToken = resultToken;
+        }
     }
 }

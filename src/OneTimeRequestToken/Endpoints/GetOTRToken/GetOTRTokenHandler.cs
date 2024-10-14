@@ -24,7 +24,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using OneTimeRequestToken.Endpoints.Common;
 using OneTimeRequestToken.Extensions;
-using OneTimeRequestToken.Helpers;
+using OneTimeRequestToken.Helpers.InternalInfo;
 using System;
 using System.Net;
 using System.Threading.Tasks;
@@ -115,7 +115,7 @@ namespace OneTimeRequestToken.Endpoints.GetOTRToken
             }
             catch (Exception e)
             {
-                _logger.LogError(e, DefaultMessages.ErrorOnInvokeTokenValidHandler);
+                _logger.LogError(e, DefaultMessagesInfo.ErrorOnInvokeTokenValidHandler);
 
                 return HttpStatusCode.InternalServerError;
             }

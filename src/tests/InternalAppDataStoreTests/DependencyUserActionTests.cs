@@ -41,12 +41,12 @@ namespace InternalAppDataStoreTests
 
             _ = services.BuildServiceProvider();
 
-            Assert.AreEqual(1, await OTRTInfo.GetUserIdentifierFunction().Invoke());
-            Assert.AreEqual("UserName", await OTRTInfo.GetUserNameFunction().Invoke());
+            Assert.AreEqual(1, await OTRTAppInfo.GetUserIdentifierFunction().Invoke());
+            Assert.AreEqual("UserName", await OTRTAppInfo.GetUserNameFunction().Invoke());
         }
 
-        private async Task<object> UserIdFuncAsync() => await Task.FromResult(1);
+        private async Task<int> UserIdFuncAsync() => await Task.FromResult(1);
 
-        private async Task<object> UserNameFuncAsync() => await Task.FromResult("UserName");
+        private async Task<string> UserNameFuncAsync() => await Task.FromResult("UserName");
     }
 }

@@ -36,14 +36,14 @@ namespace InternalAppDataStoreTests
         [TestMethod]
         public void StoreInfo_Test(string name, string key)
         {
-            OTRTInfo.SetAppKey(key);
-            OTRTInfo.SetCurrentAppName(name);
+            OTRTAppInfo.SetAppKey(key);
+            OTRTAppInfo.SetCurrentAppName(name);
 
-            Assert.AreEqual(key, OTRTInfo.GetAppKey());
-            Assert.AreEqual(name, OTRTInfo.GetCurrentAppName());
-            Assert.AreEqual($"X-XSRF-TOKEN.{name}", OTRTInfo.GetOTRTHeaderVariableName());
-            Assert.AreEqual($"X-XSRF-TOKEN.{name}.", OTRTInfo.GetOTRTHeaderVariableNameValue());
-            Assert.AreEqual($"X-XSRF-TOKEN.{name}-", OTRTInfo.GetOTRTHeaderVariableNameValueEnc());
+            Assert.AreEqual(key, OTRTAppInfo.GetAppKey());
+            Assert.AreEqual(name, OTRTAppInfo.GetCurrentAppName());
+            Assert.AreEqual($"X-XSRF-TOKEN.{name}", OTRTAppInfo.GetOTRTHeaderVariableName());
+            Assert.AreEqual($"X-XSRF-TOKEN.{name}.", OTRTAppInfo.GetOTRTHeaderVariableNameValue());
+            Assert.AreEqual($"X-XSRF-TOKEN.{name}-", OTRTAppInfo.GetOTRTHeaderVariableNameValueEnc());
         }
 
         [DataRow("DependencyActionTests", "DependencyActionTests_ENC_KEY")]
@@ -60,20 +60,20 @@ namespace InternalAppDataStoreTests
 
             _ = services.BuildServiceProvider();
 
-            Assert.AreEqual(key, OTRTInfo.GetAppKey());
-            Assert.AreEqual(name, OTRTInfo.GetCurrentAppName());
+            Assert.AreEqual(key, OTRTAppInfo.GetAppKey());
+            Assert.AreEqual(name, OTRTAppInfo.GetCurrentAppName());
         }
 
         [DataRow("app_Name")]
         [TestMethod]
         public void HeaderName_Test(string appName)
         {
-            OTRTInfo.SetCurrentAppName(appName);
+            OTRTAppInfo.SetCurrentAppName(appName);
 
-            Assert.AreEqual(appName, OTRTInfo.GetCurrentAppName());
-            Assert.AreEqual($"X-XSRF-TOKEN.{appName}", OTRTInfo.GetOTRTHeaderVariableName());
-            Assert.AreEqual($"X-XSRF-TOKEN.{appName}.", OTRTInfo.GetOTRTHeaderVariableNameValue());
-            Assert.AreEqual($"X-XSRF-TOKEN.{appName}-", OTRTInfo.GetOTRTHeaderVariableNameValueEnc());
+            Assert.AreEqual(appName, OTRTAppInfo.GetCurrentAppName());
+            Assert.AreEqual($"X-XSRF-TOKEN.{appName}", OTRTAppInfo.GetOTRTHeaderVariableName());
+            Assert.AreEqual($"X-XSRF-TOKEN.{appName}.", OTRTAppInfo.GetOTRTHeaderVariableNameValue());
+            Assert.AreEqual($"X-XSRF-TOKEN.{appName}-", OTRTAppInfo.GetOTRTHeaderVariableNameValueEnc());
         }
 
         [TestMethod]
@@ -81,9 +81,9 @@ namespace InternalAppDataStoreTests
         {
             var path = new List<string>() { "/tst/path/1" };
 
-            OTRTInfo.SetExcludedPaths(path);
+            OTRTAppInfo.SetExcludedPaths(path);
 
-            var excludedPaths = OTRTInfo.GetExcludedPaths();
+            var excludedPaths = OTRTAppInfo.GetExcludedPaths();
 
             Assert.IsTrue(excludedPaths.Any());
             Assert.AreEqual(path[0], excludedPaths.First());
@@ -100,7 +100,7 @@ namespace InternalAppDataStoreTests
         public void GetTokenLength_Test(string date)
         {
             var sourceDate = DateTime.ParseExact(date, "yyyy-MM-dd", CultureInfo.InvariantCulture);
-            var rnd = OTRTInfo.GetNumberRelatedToDate(sourceDate);
+            var rnd = OTRTAppInfo.GetNumberRelatedToDate(sourceDate);
 
             Assert.IsTrue(rnd > 0);
             Assert.IsTrue(rnd > 1);

@@ -6,7 +6,7 @@
 //  Last Modified By : RzR
 //  Last Modified On : 2024-09-23 20:11
 // ***********************************************************************
-//  <copyright file="ClientInfoDto.cs" company="">
+//  <copyright file="ClientInfo.cs" company="">
 //   Copyright (c) RzR. All rights reserved.
 //  </copyright>
 // 
@@ -16,7 +16,7 @@
 
 // ReSharper disable IdentifierTypo
 // ReSharper disable UnusedAutoPropertyAccessor.Global
-// 
+
 namespace OneTimeRequestToken.Models
 {
     /// -------------------------------------------------------------------------------------------------
@@ -24,7 +24,7 @@ namespace OneTimeRequestToken.Models
     ///     A client information data transfer object.
     /// </summary>
     /// =================================================================================================
-    public class ClientInfoDto
+    public class ClientInfo
     {
         /// -------------------------------------------------------------------------------------------------
         /// <summary>

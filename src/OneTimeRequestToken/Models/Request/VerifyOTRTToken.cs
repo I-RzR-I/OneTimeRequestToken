@@ -1,12 +1,12 @@
 ﻿// ***********************************************************************
 //  Assembly         : RzR.Shared.Services.OneTimeRequestToken
 //  Author           : RzR
-//  Created On       : 2024-09-24 22:48
+//  Created On       : 2024-10-11 19:34
 // 
 //  Last Modified By : RzR
-//  Last Modified On : 2024-09-25 21:05
+//  Last Modified On : 2024-10-11 19:40
 // ***********************************************************************
-//  <copyright file="JsonObjectSerializer.cs" company="">
+//  <copyright file="VerifyOTRTToken.cs" company="">
 //   Copyright (c) RzR. All rights reserved.
 //  </copyright>
 // 
@@ -14,50 +14,45 @@
 //  </summary>
 // ***********************************************************************
 
-#region U S A G E S
+// ReSharper disable ClassNeverInstantiated.Global
 
-using System.Text.Json;
-using System.Text.Json.Serialization;
-
-#endregion
-
-namespace OneTimeRequestToken.Helpers
+namespace OneTimeRequestToken.Models.Request
 {
     /// -------------------------------------------------------------------------------------------------
     /// <summary>
-    ///     An object for persisting JSON object data.
+    ///     A verify otrt token.
     /// </summary>
     /// =================================================================================================
-    internal static class JsonObjectSerializer
+    public class VerifyOTRTToken
     {
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
-        ///     (Immutable) options for controlling the operation.
+        ///     Gets or sets the full pathname of the request file.
         /// </summary>
+        /// <value>
+        ///     The full pathname of the request file.
+        /// </value>
         /// =================================================================================================
-        private static readonly JsonSerializerOptions Options = new JsonSerializerOptions { DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull };
+        public string RequestPath { get; set; }
 
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
-        ///     Convert this object into a string representation.
+        ///     Gets or sets the HTTP method.
         /// </summary>
-        /// <param name="o">An object to process.</param>
-        /// <returns>
-        ///     A string that represents this object.
-        /// </returns>
+        /// <value>
+        ///     The HTTP method.
+        /// </value>
         /// =================================================================================================
-        public static string ToString(object o) => JsonSerializer.Serialize(o, Options);
+        public string HttpMethod { get; set; }
 
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
-        ///     Creates a new object from the given string.
+        ///     Gets or sets the token.
         /// </summary>
-        /// <typeparam name="T">Generic type parameter.</typeparam>
-        /// <param name="value">The value.</param>
-        /// <returns>
-        ///     A T.
-        /// </returns>
+        /// <value>
+        ///     The token.
+        /// </value>
         /// =================================================================================================
-        public static T FromString<T>(string value) => JsonSerializer.Deserialize<T>(value, Options);
+        public string Token { get; set; }
     }
 }

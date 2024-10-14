@@ -1,12 +1,12 @@
 ﻿// ***********************************************************************
 //  Assembly         : RzR.Shared.Services.OneTimeRequestToken
 //  Author           : RzR
-//  Created On       : 2024-09-24 21:06
+//  Created On       : 2024-10-11 16:09
 // 
 //  Last Modified By : RzR
-//  Last Modified On : 2024-09-26 19:50
+//  Last Modified On : 2024-10-11 19:30
 // ***********************************************************************
-//  <copyright file="GetOTRTokenResult.cs" company="">
+//  <copyright file="VerifyOTRTTokenResult.cs" company="">
 //   Copyright (c) RzR. All rights reserved.
 //  </copyright>
 // 
@@ -16,28 +16,30 @@
 
 #region U S A G E S
 
+using DomainCommonExtensions.CommonExtensions.TypeParam;
 using DomainCommonExtensions.DataTypeExtensions;
 using EndpointHostBinder.Abstractions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using OneTimeRequestToken.Abstractions;
-using OneTimeRequestToken.Extensions;
 using OneTimeRequestToken.Extensions.Http;
+using OneTimeRequestToken.Helpers.InternalInfo;
+using OneTimeRequestToken.Helpers.Serializer;
 using System;
+using System.IO;
 using System.Threading.Tasks;
-// ReSharper disable InconsistentNaming
 
 #endregion
 
-namespace OneTimeRequestToken.Endpoints.GetOTRToken
+namespace OneTimeRequestToken.Endpoints.VerifyOTRTToken
 {
     /// -------------------------------------------------------------------------------------------------
     /// <summary>
-    ///     Encapsulates the result of a get otr token. This class cannot be inherited.
+    ///     Encapsulates the result of a verify otrt token. This class cannot be inherited.
     /// </summary>
     /// <seealso cref="T:EndpointHostBinder.Abstractions.IEndpointHostResult"/>
     /// =================================================================================================
-    public sealed class GetOTRTokenResult : IEndpointHostResult
+    public sealed class VerifyOTRTTokenResult : IEndpointHostResult
     {
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
@@ -48,21 +50,30 @@ namespace OneTimeRequestToken.Endpoints.GetOTRToken
 
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
-        ///     Initializes a new instance of the <see cref="GetOTRTokenResult"/> class.
+        ///     Initializes a new instance of the <see cref="VerifyOTRTTokenResult" /> class.
         /// </summary>
         /// <param name="serviceProvider">The service provider.</param>
         /// =================================================================================================
-        public GetOTRTokenResult(IServiceProvider serviceProvider) => _otrtService = serviceProvider.GetRequiredService<IOTRTService>();
+        public VerifyOTRTTokenResult(IServiceProvider serviceProvider) => _otrtService = serviceProvider.GetRequiredService<IOTRTService>();
 
         /// <inheritdoc/>
         public async Task ExecuteAsync(HttpContext context)
         {
-            var queryParams = context.Request.Query.AsNameValueCollection();
-            var requestPath = queryParams["requestPath"].TrimAndReduceSpace().ReplaceSpecialCharacters();
-            var httpMethod = queryParams["httpMethod"].TrimAndReplaceSpecialCharacters().ReplaceSpecialCharacters();
+            using var reader = new StreamReader(context.Request.Body);
+            var body = await reader.ReadToEndAsync();
 
-            var token = await _otrtService.GenerateTokenAsync(requestPath, httpMethod);
-            await context.WriteResponseAsync(token);
+            var requestParam = context.Request.ContentType.Contains(AppContentTypeInfo.LikeJson).IsTrue()
+                ? JsonObjectSerializer.FromString<Models.Request.VerifyOTRTToken>(body)
+                : XmlObjectSerializer.FromString<Models.Request.VerifyOTRTToken>(body);
+
+            var requestPath = requestParam.RequestPath;
+            var httpMethod = requestParam.HttpMethod.IfIsNull(string.Empty).ToUpper()
+                .TrimAndReplaceSpecialCharacters().ReplaceSpecialCharacters();
+            var token = requestParam.Token;
+
+            var isValid = await _otrtService.ValidateTokenAsync(token, httpMethod, requestPath);
+
+            await context.WriteResponseAsync(isValid);
         }
 
         /// <inheritdoc/>

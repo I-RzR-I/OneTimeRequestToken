@@ -16,7 +16,10 @@
 
 #region U S A G E S
 
+using AggregatedGenericResultMessage.Abstractions;
+using DomainCommonExtensions.DataTypeExtensions;
 using Microsoft.AspNetCore.Http;
+using OneTimeRequestToken.Helpers.InternalInfo;
 using System.Threading.Tasks;
 
 #endregion
@@ -173,6 +176,80 @@ namespace OneTimeRequestToken.Extensions.Http
             context.SetAccessControlAllowOrigin();
 
             await context.Response.WriteXmlAsync(data, statusCode, contentType, false);
+        }
+
+        /// -------------------------------------------------------------------------------------------------
+        /// <summary>
+        ///     A HttpContext extension method that writes a response asynchronous.
+        /// </summary>
+        /// <param name="context">The context to act on.</param>
+        /// <param name="data">The data.</param>
+        /// <param name="statusCode">(Optional) The status code.</param>
+        /// <param name="contentType">(Optional) Type of the content.</param>
+        /// <returns>
+        ///     A Task.
+        /// </returns>
+        /// =================================================================================================
+        internal static async Task WriteResponseAsync(this HttpContext context, object data, int statusCode = 200, string contentType = null)
+        {
+            var isAcceptJsonResult = (context.Request.Headers["Accept"].ToString() ?? string.Empty).ToLower().Contains(AppContentTypeInfo.LikeJson);
+            //context.Response.ClearResponse();
+            context.SetAccessControlAllowOrigin();
+
+            if (isAcceptJsonResult.IsTrue())
+                await context.Response.WriteJsonAsync(data, statusCode, contentType, false);
+            else
+                await context.Response.WriteXmlAsync(data, statusCode, contentType, false);
+        }
+
+        /// -------------------------------------------------------------------------------------------------
+        /// <summary>
+        ///     A HttpContext extension method that writes a response asynchronous.
+        /// </summary>
+        /// <param name="context">The context to act on.</param>
+        /// <param name="data">The data.</param>
+        /// <param name="contentType">(Optional) Type of the content.</param>
+        /// <returns>
+        ///     A Task.
+        /// </returns>
+        /// =================================================================================================
+        internal static async Task WriteResponseAsync(this HttpContext context, IResult data, string contentType = null)
+        {
+            var isAcceptJsonResult = (context.Request.Headers["Accept"].ToString() ?? string.Empty).ToLower().Contains(AppContentTypeInfo.LikeJson);
+            var statusCode = data.IsSuccess ? StatusCodes.Status204NoContent : StatusCodes.Status400BadRequest;
+
+            //context.Response.ClearResponse();
+            context.SetAccessControlAllowOrigin();
+
+            if (isAcceptJsonResult.IsTrue())
+                await context.Response.WriteJsonAsync(data, statusCode, contentType, false);
+            else
+                await context.Response.WriteXmlAsync(data.ToSoapResult(), statusCode, contentType, false);
+        }
+
+        /// -------------------------------------------------------------------------------------------------
+        /// <summary>
+        ///     A HttpContext extension method that writes a response asynchronous.
+        /// </summary>
+        /// <param name="context">The context to act on.</param>
+        /// <param name="data">The data.</param>
+        /// <param name="contentType">(Optional) Type of the content.</param>
+        /// <returns>
+        ///     A Task.
+        /// </returns>
+        /// =================================================================================================
+        internal static async Task WriteResponseAsync<T>(this HttpContext context, IResult<T> data, string contentType = null)
+        {
+            var isAcceptJsonResult = (context.Request.Headers["Accept"].ToString() ?? string.Empty).ToLower().Contains(AppContentTypeInfo.LikeJson);
+            var statusCode = data.IsSuccess ? StatusCodes.Status200OK : StatusCodes.Status400BadRequest;
+
+            //context.Response.ClearResponse();
+            context.SetAccessControlAllowOrigin();
+
+            if (isAcceptJsonResult.IsTrue())
+                await context.Response.WriteJsonAsync(data, statusCode, contentType, false);
+            else
+                await context.Response.WriteXmlAsync(data.ToSoapResult(), statusCode, contentType, false);
         }
     }
 }

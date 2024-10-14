@@ -1,12 +1,12 @@
 ﻿// ***********************************************************************
 //  Assembly         : RzR.Shared.Services.OneTimeRequestToken
 //  Author           : RzR
-//  Created On       : 2024-09-23 16:06
+//  Created On       : 2024-10-11 18:18
 // 
 //  Last Modified By : RzR
-//  Last Modified On : 2024-09-23 16:06
+//  Last Modified On : 2024-10-11 19:39
 // ***********************************************************************
-//  <copyright file="GenerateTokenResultDto.cs" company="">
+//  <copyright file="AppContentTypeHelper.cs" company="">
 //   Copyright (c) RzR. All rights reserved.
 //  </copyright>
 // 
@@ -14,55 +14,56 @@
 //  </summary>
 // ***********************************************************************
 
-// ReSharper disable ClassNeverInstantiated.Global
-// ReSharper disable UnusedAutoPropertyAccessor.Global
-// 
+#region U S A G E S
 
-using System.Runtime.Serialization;
+using System.Collections.Generic;
 
-namespace OneTimeRequestToken.Models.Internal
+// ReSharper disable MemberCanBePrivate.Global
+
+#endregion
+
+namespace OneTimeRequestToken.Helpers.InternalInfo
 {
     /// -------------------------------------------------------------------------------------------------
     /// <summary>
-    ///     A generate token result data transfer object.
+    ///     An application content type helper.
     /// </summary>
     /// =================================================================================================
-    [DataContract]
-    public class GenerateTokenResultDto
+    internal static class AppContentTypeInfo
     {
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
-        ///     Gets or sets the name of the token header.
+        ///     (Immutable) the like JSON.
         /// </summary>
-        /// <value>
-        ///     The name of the token header.
-        /// </value>
         /// =================================================================================================
-        [DataMember]
-        public string TokenHeaderName { get; set; }
+        internal const string LikeJson = "/json";
 
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
-        ///     Gets or sets the token header value.
+        ///     (Immutable) the application JSON.
         /// </summary>
-        /// <value>
-        ///     The token header value.
-        /// </value>
         /// =================================================================================================
-        [DataMember]
-        public string TokenHeaderValue { get; set; }
+        internal const string AppJson = "application/json";
 
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
-        ///     Initializes a new instance of the <see cref="GenerateTokenResultDto"/> class.
+        ///     (Immutable) the application XML.
         /// </summary>
-        /// <param name="tokenHeaderName">Name of the token header.</param>
-        /// <param name="tokenHeaderValue">The token header value.</param>
         /// =================================================================================================
-        public GenerateTokenResultDto(string tokenHeaderName, string tokenHeaderValue)
-        {
-            TokenHeaderName = tokenHeaderName;
-            TokenHeaderValue = tokenHeaderValue;
-        }
+        internal const string AppXml = "application/xml";
+
+        /// -------------------------------------------------------------------------------------------------
+        /// <summary>
+        ///     (Immutable) the text XML.
+        /// </summary>
+        /// =================================================================================================
+        internal const string TxtXml = "text/xml";
+
+        /// -------------------------------------------------------------------------------------------------
+        /// <summary>
+        ///     (Immutable) type of the allowed content.
+        /// </summary>
+        /// =================================================================================================
+        internal static readonly IEnumerable<string> AllowedContentType = new List<string> { AppJson, AppXml, TxtXml };
     }
 }

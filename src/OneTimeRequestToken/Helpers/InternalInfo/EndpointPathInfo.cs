@@ -1,12 +1,12 @@
 ﻿// ***********************************************************************
 //  Assembly         : RzR.Shared.Services.OneTimeRequestToken
 //  Author           : RzR
-//  Created On       : 2024-09-23 19:37
+//  Created On       : 2024-10-11 16:04
 // 
 //  Last Modified By : RzR
-//  Last Modified On : 2024-09-23 22:35
+//  Last Modified On : 2024-10-11 16:04
 // ***********************************************************************
-//  <copyright file="IClientBrowserInfoService.cs" company="">
+//  <copyright file="EndpointPathHelper.cs" company="">
 //   Copyright (c) RzR. All rights reserved.
 //  </copyright>
 // 
@@ -14,50 +14,34 @@
 //  </summary>
 // ***********************************************************************
 
-#region U S A G E S
-
-using OneTimeRequestToken.Models;
-
-
-#endregion
-
-namespace OneTimeRequestToken.Abstractions
+namespace OneTimeRequestToken.Helpers.InternalInfo
 {
     /// -------------------------------------------------------------------------------------------------
     /// <summary>
-    ///     Interface for client browser information service.
+    ///     An endpoint path helper.
     /// </summary>
     /// =================================================================================================
-    public interface IClientBrowserInfoService
+    internal static class EndpointPathInfo
     {
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
-        ///     Get user real IP.
+        ///     (Immutable) the root.
         /// </summary>
-        /// <returns>
-        ///     The client IP.
-        /// </returns>
         /// =================================================================================================
-        string GetClientIp();
+        private const string Root = "/otrt";
 
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
-        ///     Gets user client (browser) info.
+        ///     (Immutable) full pathname of the get token file.
         /// </summary>
-        /// <returns>
-        ///     The client information.
-        /// </returns>
         /// =================================================================================================
-        ClientInfo GetClientInfo();
+        internal static readonly string GetTokenPath = $"{Root}/token";
 
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
-        ///     Get client platform.
+        ///     (Immutable) full pathname of the verify token file.
         /// </summary>
-        /// <returns>
-        ///     The client platform.
-        /// </returns>
         /// =================================================================================================
-        string GetClientPlatform();
+        internal static readonly string VerifyTokenPath = $"{Root}/verify-token";
     }
 }

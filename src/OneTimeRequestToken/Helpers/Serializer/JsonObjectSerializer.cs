@@ -1,12 +1,12 @@
 ﻿// ***********************************************************************
 //  Assembly         : RzR.Shared.Services.OneTimeRequestToken
 //  Author           : RzR
-//  Created On       : 2024-09-23 19:37
+//  Created On       : 2024-09-24 22:48
 // 
 //  Last Modified By : RzR
-//  Last Modified On : 2024-09-23 22:35
+//  Last Modified On : 2024-09-25 21:05
 // ***********************************************************************
-//  <copyright file="IClientBrowserInfoService.cs" company="">
+//  <copyright file="JsonObjectSerializer.cs" company="">
 //   Copyright (c) RzR. All rights reserved.
 //  </copyright>
 // 
@@ -16,48 +16,52 @@
 
 #region U S A G E S
 
-using OneTimeRequestToken.Models;
-
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 #endregion
 
-namespace OneTimeRequestToken.Abstractions
+namespace OneTimeRequestToken.Helpers.Serializer
 {
     /// -------------------------------------------------------------------------------------------------
     /// <summary>
-    ///     Interface for client browser information service.
+    ///     An object for persisting JSON object data.
     /// </summary>
     /// =================================================================================================
-    public interface IClientBrowserInfoService
+    internal static class JsonObjectSerializer
     {
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
-        ///     Get user real IP.
+        ///     (Immutable) options for controlling the operation.
         /// </summary>
-        /// <returns>
-        ///     The client IP.
-        /// </returns>
         /// =================================================================================================
-        string GetClientIp();
+        private static readonly JsonSerializerOptions Options = new JsonSerializerOptions
+        {
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+            PropertyNameCaseInsensitive = true
+        };
 
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
-        ///     Gets user client (browser) info.
+        ///     Convert this object into a string representation.
         /// </summary>
+        /// <param name="o">An object to process.</param>
         /// <returns>
-        ///     The client information.
+        ///     A string that represents this object.
         /// </returns>
         /// =================================================================================================
-        ClientInfo GetClientInfo();
+        internal static string ToString(object o) => JsonSerializer.Serialize(o, Options);
 
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
-        ///     Get client platform.
+        ///     Creates a new object from the given string.
         /// </summary>
+        /// <typeparam name="T">Generic type parameter.</typeparam>
+        /// <param name="value">The value.</param>
         /// <returns>
-        ///     The client platform.
+        ///     A T.
         /// </returns>
         /// =================================================================================================
-        string GetClientPlatform();
+        internal static T FromString<T>(string value) where T : class => JsonSerializer.Deserialize<T>(value, Options);
     }
 }
