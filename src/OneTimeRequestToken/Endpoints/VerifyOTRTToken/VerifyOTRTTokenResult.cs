@@ -16,6 +16,7 @@
 
 #region U S A G E S
 
+using DomainCommonExtensions.CommonExtensions.TypeParam;
 using DomainCommonExtensions.DataTypeExtensions;
 using EndpointHostBinder.Abstractions;
 using Microsoft.AspNetCore.Http;
@@ -26,7 +27,6 @@ using OneTimeRequestToken.Helpers.InternalInfo;
 using OneTimeRequestToken.Helpers.Serializer;
 using System;
 using System.IO;
-using System.Net;
 using System.Threading.Tasks;
 
 #endregion
@@ -63,22 +63,17 @@ namespace OneTimeRequestToken.Endpoints.VerifyOTRTToken
             var body = await reader.ReadToEndAsync();
 
             var requestParam = context.Request.ContentType.Contains(AppContentTypeInfo.LikeJson).IsTrue()
-                ? JsonObjectSerializer.FromString<Models.VerifyOTRTToken>(body)
-                : XmlObjectSerializer.FromString<Models.VerifyOTRTToken>(body);
+                ? JsonObjectSerializer.FromString<Models.Request.VerifyOTRTToken>(body)
+                : XmlObjectSerializer.FromString<Models.Request.VerifyOTRTToken>(body);
 
             var requestPath = requestParam.RequestPath;
-            var httpMethod = requestParam.HttpMethod.TrimAndReplaceSpecialCharacters().ReplaceSpecialCharacters();
+            var httpMethod = requestParam.HttpMethod.IfIsNull(string.Empty).ToUpper()
+                .TrimAndReplaceSpecialCharacters().ReplaceSpecialCharacters();
             var token = requestParam.Token;
 
             var isValid = await _otrtService.ValidateTokenAsync(token, httpMethod, requestPath);
 
-            if (isValid.IsSuccess.IsFalse())
-                await context.ResponseWithErrorAsync(HttpStatusCode.BadRequest.ToInt(), isValid.GetFirstMessage());
-
-            if ((context.Request.Headers["Accept"].ToString() ?? string.Empty).ToLower().Contains(AppContentTypeInfo.LikeJson))
-                await context.WriteJsonAsync(isValid.IsSuccess);
-            else
-                await context.WriteXmlAsync(isValid.IsSuccess);
+            await context.WriteResponseAsync(isValid);
         }
 
         /// <inheritdoc/>

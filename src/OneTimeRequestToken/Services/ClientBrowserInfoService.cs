@@ -52,8 +52,8 @@ namespace OneTimeRequestToken.Services
             => _httpContextAccessor = httpContextAccessor;
 
         /// <inheritdoc />
-        public ClientInfoDto GetClientInfo()
-            => new ClientInfoDto()
+        public ClientInfo GetClientInfo()
+            => new ClientInfo()
             {
                 ClientIp = GetClientIp(),
                 ClientAgent = _httpContextAccessor.HttpContext?.Request.Headers["User-Agent"],

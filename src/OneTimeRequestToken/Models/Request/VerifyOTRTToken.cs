@@ -16,7 +16,7 @@
 
 // ReSharper disable ClassNeverInstantiated.Global
 
-namespace OneTimeRequestToken.Models
+namespace OneTimeRequestToken.Models.Request
 {
     /// -------------------------------------------------------------------------------------------------
     /// <summary>

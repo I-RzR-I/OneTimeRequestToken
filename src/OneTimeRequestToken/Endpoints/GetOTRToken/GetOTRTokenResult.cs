@@ -23,7 +23,6 @@ using Microsoft.Extensions.DependencyInjection;
 using OneTimeRequestToken.Abstractions;
 using OneTimeRequestToken.Extensions;
 using OneTimeRequestToken.Extensions.Http;
-using OneTimeRequestToken.Helpers.InternalInfo;
 using System;
 using System.Threading.Tasks;
 // ReSharper disable InconsistentNaming
@@ -63,13 +62,7 @@ namespace OneTimeRequestToken.Endpoints.GetOTRToken
             var httpMethod = queryParams["httpMethod"].TrimAndReplaceSpecialCharacters().ReplaceSpecialCharacters();
 
             var token = await _otrtService.GenerateTokenAsync(requestPath, httpMethod);
-            if (token.IsSuccess.IsFalse())
-                await context.ResponseWithErrorAsync(500, token.GetFirstMessage());
-
-            if ((context.Request.Headers["Accept"].ToString() ?? string.Empty).ToLower().Contains(AppContentTypeInfo.LikeJson))
-                await context.WriteJsonAsync(token.Response);
-            else
-                await context.WriteXmlAsync(token.Response);
+            await context.WriteResponseAsync(token);
         }
 
         /// <inheritdoc/>

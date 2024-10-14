@@ -18,6 +18,8 @@
 
 using AggregatedGenericResultMessage;
 using AggregatedGenericResultMessage.Abstractions;
+using AggregatedGenericResultMessage.Extensions.Result.Messages;
+using AggregatedGenericResultMessage.Models;
 using DomainCommonExtensions.CommonExtensions;
 using DomainCommonExtensions.DataTypeExtensions;
 using Microsoft.AspNetCore.Http;
@@ -29,6 +31,7 @@ using OneTimeRequestToken.Extensions;
 using OneTimeRequestToken.Helpers;
 using OneTimeRequestToken.Helpers.InternalInfo;
 using OneTimeRequestToken.Models.Internal;
+using OneTimeRequestToken.Models.Result;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -97,7 +100,7 @@ namespace OneTimeRequestToken.Services
         }
 
         /// <inheritdoc />
-        public async Task<IResult<GenerateTokenResultDto>> GenerateTokenAsync(string requestPath, string httpMethod, CancellationToken cancellationToken = default)
+        public async Task<IResult<GenerateTokenResult>> GenerateTokenAsync(string requestPath, string httpMethod, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -118,24 +121,24 @@ namespace OneTimeRequestToken.Services
 
                 //Return data to client
                 return await Task.FromResult(
-                    Result<GenerateTokenResultDto>.Success(
-                        new GenerateTokenResultDto(OTRTAppInfo.GetOTRTHeaderVariableName(), encryptedHeaderTokenName.ResultToken)));
+                    Result<GenerateTokenResult>.Success(
+                        new GenerateTokenResult(OTRTAppInfo.GetOTRTHeaderVariableName(), encryptedHeaderTokenName.ResultToken)));
             }
             catch (Exception e)
             {
                 _logger.LogError(e, DefaultMessagesInfo.ErrorOnTokenGeneration);
 
-                return Result<GenerateTokenResultDto>.Failure(DefaultMessagesInfo.ErrorOnTokenGeneration);
+                return Result<GenerateTokenResult>.Failure(DefaultMessagesInfo.ErrorOnTokenGeneration);
             }
         }
 
         /// <inheritdoc />
-        public async Task<IResult> ValidateTokenAsync(string token, string httpMethod, string requestPath = null, CancellationToken cancellationToken = default)
+        public async Task<IResult<VerifyTokenResult>> ValidateTokenAsync(string token, string httpMethod, string requestPath = null, CancellationToken cancellationToken = default)
         {
             try
             {
-                var localRequestPath = requestPath.IsNullOrEmpty() 
-                    ? _httpContextAccessor.HttpContext?.Request.Path.ToString() 
+                var localRequestPath = requestPath.IsNullOrEmpty()
+                    ? _httpContextAccessor.HttpContext?.Request.Path.ToString()
                     : requestPath;
                 if (httpMethod.IsNullOrEmpty().IsFalse())
                 {
@@ -147,7 +150,9 @@ namespace OneTimeRequestToken.Services
                             .AesDecryptString(OTRTAppInfo.GetAppKey()).Split('|');
 
                         if (Convert.ToDateTime(sourceHeaderToken[0]).IsTokenValid().IsFalse())
-                            return await Task.FromResult(Result.Failure(DefaultMessagesInfo.ErrorInvalidToken));
+                            return await Task.FromResult(Result<VerifyTokenResult>
+                                .Success(new VerifyTokenResult(false))
+                                .AddMessage(new MessageDataModel(DefaultMessagesInfo.ErrorInvalidToken)));
 
                         var encryptedClientToken = await BuildClientTokenAsync(localRequestPath, httpMethod);
 
@@ -156,25 +161,34 @@ namespace OneTimeRequestToken.Services
 
                         if (RequestTokenHelper.IsValidRequest(cachedTokenDecrypt, tokenDataDecrypt, sourceHeaderToken).IsFalse())
                         {
-                            return await Task.FromResult(Result.Failure(DefaultMessagesInfo.ErrorInvalidTokenData));
+                            return await Task.FromResult(Result<VerifyTokenResult>
+                                .Success(new VerifyTokenResult(false))
+                                .AddMessage(new MessageDataModel(DefaultMessagesInfo.ErrorInvalidTokenData)));
                         }
 
                         //Remove from cache key
                         _memoryCache.Remove(token);
 
-                        return await Task.FromResult(Result.Success());
+                        return await Task.FromResult(Result<VerifyTokenResult>
+                            .Success(new VerifyTokenResult(true)));
                     }
 
-                    return await Task.FromResult(Result.Failure(DefaultMessagesInfo.ErrorTokenNotFound));
+                    return await Task.FromResult(Result<VerifyTokenResult>
+                        .Success(new VerifyTokenResult(false))
+                        .AddMessage(new MessageDataModel(DefaultMessagesInfo.ErrorTokenNotFound)));
                 }
 
-                return await Task.FromResult(Result.Failure(DefaultMessagesInfo.ErrorNotHttpPostOrInvalid));
+                return await Task.FromResult(Result<VerifyTokenResult>
+                    .Success(new VerifyTokenResult(false))
+                    .AddMessage(new MessageDataModel(DefaultMessagesInfo.ErrorNotHttpPostOrInvalid)));
             }
             catch (Exception e)
             {
                 _logger.LogError(e, DefaultMessagesInfo.ErrorOnTokenValidation);
 
-                return Result.Failure(DefaultMessagesInfo.ErrorOnTokenValidation);
+                return Result<VerifyTokenResult>
+                    .Failure(DefaultMessagesInfo.ErrorOnTokenValidation)
+                    .AddError(e);
             }
         }
 
@@ -189,7 +203,7 @@ namespace OneTimeRequestToken.Services
         ///     The build client token header name.
         /// </returns>
         /// =================================================================================================
-        private async Task<TokenInfoDto> BuildClientTokenHeaderNameAsync(string requestPath, string httpMethod)
+        private async Task<TokenInfo> BuildClientTokenHeaderNameAsync(string requestPath, string httpMethod)
         {
             try
             {
@@ -204,7 +218,7 @@ namespace OneTimeRequestToken.Services
                 var encryptToken = clientToken.AesEncryptString(OTRTAppInfo.GetAppKey());
                 var headerToken = $"{OTRTAppInfo.GetOTRTHeaderVariableNameValue()}{encryptToken}"; //.TruncateExactLength(dayNumber)
 
-                return new TokenInfoDto(encryptToken, headerToken);
+                return new TokenInfo(encryptToken, headerToken);
             }
             catch (Exception e)
             {
@@ -225,7 +239,7 @@ namespace OneTimeRequestToken.Services
         ///     The build client token.
         /// </returns>
         /// =================================================================================================
-        private async Task<TokenInfoDto> BuildClientTokenAsync(string requestPath, string httpMethod)
+        private async Task<TokenInfo> BuildClientTokenAsync(string requestPath, string httpMethod)
         {
             try
             {
@@ -244,7 +258,7 @@ namespace OneTimeRequestToken.Services
                 var encryptToken = clientToken.AesEncryptString(OTRTAppInfo.GetAppKey());
                 var clientEncToken = $"{OTRTAppInfo.GetOTRTHeaderVariableNameValueEnc()}{encryptToken}";
 
-                return new TokenInfoDto(encryptToken, clientEncToken);
+                return new TokenInfo(encryptToken, clientEncToken);
             }
             catch (Exception e)
             {

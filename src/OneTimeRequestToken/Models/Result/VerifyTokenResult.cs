@@ -1,12 +1,12 @@
 ﻿// ***********************************************************************
 //  Assembly         : RzR.Shared.Services.OneTimeRequestToken
 //  Author           : RzR
-//  Created On       : 2024-09-25 18:08
+//  Created On       : 2024-10-14 14:14
 // 
 //  Last Modified By : RzR
-//  Last Modified On : 2024-09-25 18:08
+//  Last Modified On : 2024-10-14 14:14
 // ***********************************************************************
-//  <copyright file="TokenInfoDto.cs" company="">
+//  <copyright file="VerifyTokenResult.cs" company="">
 //   Copyright (c) RzR. All rights reserved.
 //  </copyright>
 // 
@@ -14,46 +14,40 @@
 //  </summary>
 // ***********************************************************************
 
-namespace OneTimeRequestToken.Models.Internal
+using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
+
+namespace OneTimeRequestToken.Models.Result
 {
     /// -------------------------------------------------------------------------------------------------
     /// <summary>
-    ///     A token information data transfer object.
+    ///     Encapsulates the result of a verify token.
     /// </summary>
     /// =================================================================================================
-    internal class TokenInfoDto
+    [DataContract(Name = "VerifyTokenResult")]
+    public class VerifyTokenResult
     {
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
-        ///     Gets or sets the clear token.
+        ///     Gets or sets a value indicating whether this object is valid.
         /// </summary>
         /// <value>
-        ///     The clear token.
+        ///     True if this object is valid, false if not.
         /// </value>
         /// =================================================================================================
-        public string ClearToken { get; set; }
+        [DataMember(Name = "IsValid")]
+        [JsonPropertyName(name: "isValid")]
+        public bool IsValid { get; set; } = false;
 
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
-        ///     Gets or sets the result token.
+        ///     Initializes a new instance of the <see cref="VerifyTokenResult"/> class.
         /// </summary>
-        /// <value>
-        ///     The result token.
-        /// </value>
+        /// <param name="isValid">
+        ///     (Optional)
+        ///     True if this object is valid, false if not.
+        /// </param>
         /// =================================================================================================
-        public string ResultToken { get; set; }
-
-        /// -------------------------------------------------------------------------------------------------
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="TokenInfoDto"/> class.
-        /// </summary>
-        /// <param name="clearToken">The clear token.</param>
-        /// <param name="resultToken">The result token.</param>
-        /// =================================================================================================
-        public TokenInfoDto(string clearToken, string resultToken)
-        {
-            ClearToken = clearToken;
-            ResultToken = resultToken;
-        }
+        public VerifyTokenResult(bool isValid) => IsValid = isValid;
     }
 }

@@ -106,7 +106,7 @@ namespace OneTimeRequestToken.Middleware
                         if (xsrfToken.IsNullOrEmpty().IsFalse())
                         {
                             var isValid = await _otrtService.ValidateTokenAsync(xsrfToken, context.Request.Method);
-                            if (isValid.IsSuccess.IsFalse())
+                            if (isValid.IsSuccess.IsFalse() || isValid.Response.IsValid.IsFalse())
                             {
                                 await context.ResponseWithBadRequestAsync(isValid.GetFirstMessage()).ConfigureAwait(false);
 

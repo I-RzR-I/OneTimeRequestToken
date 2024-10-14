@@ -1,12 +1,12 @@
 ﻿// ***********************************************************************
 //  Assembly         : RzR.Shared.Services.OneTimeRequestToken
 //  Author           : RzR
-//  Created On       : 2024-09-23 16:06
+//  Created On       : 2024-10-14 15:46
 // 
 //  Last Modified By : RzR
-//  Last Modified On : 2024-09-23 16:06
+//  Last Modified On : 2024-10-14 15:46
 // ***********************************************************************
-//  <copyright file="GenerateTokenResultDto.cs" company="">
+//  <copyright file="GenerateTokenResult.cs" company="">
 //   Copyright (c) RzR. All rights reserved.
 //  </copyright>
 // 
@@ -18,9 +18,14 @@
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 // 
 
-using System.Runtime.Serialization;
+#region U S A G E S
 
-namespace OneTimeRequestToken.Models.Internal
+using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
+
+#endregion
+
+namespace OneTimeRequestToken.Models.Result
 {
     /// -------------------------------------------------------------------------------------------------
     /// <summary>
@@ -28,7 +33,7 @@ namespace OneTimeRequestToken.Models.Internal
     /// </summary>
     /// =================================================================================================
     [DataContract(Name = "GenerateTokenResult")]
-    public class GenerateTokenResultDto
+    public class GenerateTokenResult
     {
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
@@ -39,6 +44,7 @@ namespace OneTimeRequestToken.Models.Internal
         /// </value>
         /// =================================================================================================
         [DataMember(Name = "TokenHeaderName")]
+        [JsonPropertyName(name: "tokenHeaderName")]
         public string TokenHeaderName { get; set; }
 
         /// -------------------------------------------------------------------------------------------------
@@ -50,16 +56,17 @@ namespace OneTimeRequestToken.Models.Internal
         /// </value>
         /// =================================================================================================
         [DataMember(Name = "TokenHeaderValue")]
+        [JsonPropertyName(name: "tokenHeaderValue")]
         public string TokenHeaderValue { get; set; }
 
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
-        ///     Initializes a new instance of the <see cref="GenerateTokenResultDto"/> class.
+        ///     Initializes a new instance of the <see cref="GenerateTokenResult" /> class.
         /// </summary>
         /// <param name="tokenHeaderName">Name of the token header.</param>
         /// <param name="tokenHeaderValue">The token header value.</param>
         /// =================================================================================================
-        public GenerateTokenResultDto(string tokenHeaderName, string tokenHeaderValue)
+        public GenerateTokenResult(string tokenHeaderName, string tokenHeaderValue)
         {
             TokenHeaderName = tokenHeaderName;
             TokenHeaderValue = tokenHeaderValue;

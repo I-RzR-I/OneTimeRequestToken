@@ -17,7 +17,7 @@
 #region U S A G E S
 
 using AggregatedGenericResultMessage.Abstractions;
-using OneTimeRequestToken.Models.Internal;
+using OneTimeRequestToken.Models.Result;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -45,7 +45,7 @@ namespace OneTimeRequestToken.Abstractions
         ///     The generate token.
         /// </returns>
         /// =================================================================================================
-        Task<IResult<GenerateTokenResultDto>> GenerateTokenAsync(string requestPath, string httpMethod, CancellationToken cancellationToken = default);
+        Task<IResult<GenerateTokenResult>> GenerateTokenAsync(string requestPath, string httpMethod, CancellationToken cancellationToken = default);
 
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
@@ -61,6 +61,6 @@ namespace OneTimeRequestToken.Abstractions
         ///     The validate token.
         /// </returns>
         /// =================================================================================================
-        Task<IResult> ValidateTokenAsync(string token, string httpMethod, string requestPath = null, CancellationToken cancellationToken = default);
+        Task<IResult<VerifyTokenResult>> ValidateTokenAsync(string token, string httpMethod, string requestPath = null, CancellationToken cancellationToken = default);
     }
 }
