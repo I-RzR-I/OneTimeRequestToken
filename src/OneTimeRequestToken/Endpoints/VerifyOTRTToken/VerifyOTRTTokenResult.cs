@@ -21,6 +21,7 @@ using DomainCommonExtensions.DataTypeExtensions;
 using EndpointHostBinder.Abstractions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Primitives;
 using OneTimeRequestToken.Abstractions;
 using OneTimeRequestToken.Extensions.Http;
 using OneTimeRequestToken.Helpers.InternalInfo;
@@ -62,7 +63,8 @@ namespace OneTimeRequestToken.Endpoints.VerifyOTRTToken
             using var reader = new StreamReader(context.Request.Body);
             var body = await reader.ReadToEndAsync();
 
-            var requestParam = context.Request.ContentType.Contains(AppContentTypeInfo.LikeJson).IsTrue()
+            var requestParam = (context.Request.ContentType.Contains(AppContentTypeInfo.LikeJson).IsTrue()
+                        || (context.Request.Headers["Accept"].IfIsNull(new StringValues(string.Empty)).ToString()).Contains(AppContentTypeInfo.LikeJson).IsTrue())
                 ? JsonObjectSerializer.FromString<Models.Request.VerifyOTRTToken>(body)
                 : XmlObjectSerializer.FromString<Models.Request.VerifyOTRTToken>(body);
 

@@ -1,4 +1,4 @@
-> **Note** This repository is developed using .netstandard2.0, .netstandard2.0.
+> **Note** This repository is developed using .netstandard2.0.
 
 | Name     | Details |
 |----------|----------|
