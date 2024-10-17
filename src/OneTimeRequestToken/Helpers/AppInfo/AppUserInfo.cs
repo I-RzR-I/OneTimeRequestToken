@@ -1,12 +1,12 @@
 ﻿// ***********************************************************************
 //  Assembly         : RzR.Shared.Services.OneTimeRequestToken
 //  Author           : RzR
-//  Created On       : 2024-09-24 00:45
+//  Created On       : 2024-10-17 18:41
 // 
 //  Last Modified By : RzR
-//  Last Modified On : 2024-09-25 21:05
+//  Last Modified On : 2024-10-17 18:59
 // ***********************************************************************
-//  <copyright file="OTRTOptions.cs" company="">
+//  <copyright file="AppUserInfo.cs" company="">
 //   Copyright (c) RzR. All rights reserved.
 //  </copyright>
 // 
@@ -17,69 +17,70 @@
 #region U S A G E S
 
 using System;
-using System.Collections.Generic;
-
-// ReSharper disable UnusedAutoPropertyAccessor.Global
+using System.Threading.Tasks;
 
 #endregion
 
-namespace OneTimeRequestToken.Models
+namespace OneTimeRequestToken.Helpers.AppInfo
 {
     /// -------------------------------------------------------------------------------------------------
-    /// <summary>
-    ///     An OTRT options.
-    /// </summary>
+    /// <content>
+    ///     Information about the OTRT application.
+    /// </content>
     /// =================================================================================================
-    public class OTRTOptions
+    internal static partial class OTRTAppInfo
     {
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
-        ///     Gets or sets the name of the application.
+        ///     Gets or sets the user identifier function.
         /// </summary>
         /// <value>
-        ///     The name of the application.
+        ///     A function delegate that yields a Task&lt;object&gt;
         /// </value>
         /// =================================================================================================
-        public string AppName { get; set; }
+        private static Func<Task<object>> UserIdentifierFunction { get; set; }
 
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
-        ///     Gets or sets the application key.
+        ///     Gets or sets the user name function.
         /// </summary>
         /// <value>
-        ///     The application key.
+        ///     A function delegate that yields a Task&lt;object&gt;
         /// </value>
         /// =================================================================================================
-        public string AppKey { get; set; }
+        private static Func<Task<object>> UserNameFunction { get; set; }
 
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
-        ///     Gets or sets the excluded paths.
+        ///     Sets the functions.
         /// </summary>
-        /// <value>
-        ///     The excluded paths.
-        /// </value>
+        /// <param name="userIdentifierFunction">The user identifier function.</param>
+        /// <param name="userNameFunction">The user name function.</param>
         /// =================================================================================================
-        public IEnumerable<string> ExcludedPaths { get; set; }
+        internal static void SetFunctions(Func<Task<object>> userIdentifierFunction, Func<Task<object>> userNameFunction)
+        {
+            UserIdentifierFunction = userIdentifierFunction;
+            UserNameFunction = userNameFunction;
+        }
 
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
-        ///     Gets or sets the token valid time. Default value => 5 minutes.
+        ///     Gets user identifier function.
         /// </summary>
-        /// <value>
-        ///     The token valid time.
-        /// </value>
+        /// <returns>
+        ///     A function delegate that yields a Task&lt;object&gt;
+        /// </returns>
         /// =================================================================================================
-        public TimeSpan TokenValidTime { get; set; }
+        internal static Func<Task<object>> GetUserIdentifierFunction() => UserIdentifierFunction;
 
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
-        ///     Gets or sets the maximum allowed token attempt.
+        ///     Gets user name function.
         /// </summary>
-        /// <value>
-        ///     The maximum allowed token attempt.
-        /// </value>
+        /// <returns>
+        ///     A function delegate that yields a Task&lt;object&gt;
+        /// </returns>
         /// =================================================================================================
-        public short MaxAllowedTokenAttempt { get; set; }
+        internal static Func<Task<object>> GetUserNameFunction() => UserNameFunction;
     }
 }
