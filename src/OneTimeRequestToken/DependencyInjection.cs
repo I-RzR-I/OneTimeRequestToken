@@ -25,7 +25,7 @@ using Microsoft.Extensions.DependencyInjection;
 using OneTimeRequestToken.Abstractions;
 using OneTimeRequestToken.Endpoints.GetOTRToken;
 using OneTimeRequestToken.Endpoints.VerifyOTRTToken;
-using OneTimeRequestToken.Helpers;
+using OneTimeRequestToken.Helpers.AppInfo;
 using OneTimeRequestToken.Helpers.InternalInfo;
 using OneTimeRequestToken.Middleware;
 using OneTimeRequestToken.Models;
@@ -120,7 +120,6 @@ namespace OneTimeRequestToken
             StoreServiceKeys(serviceOptions);
 
             serviceCollection.AddHttpContextAccessor();
-            serviceCollection.AddMemoryCache();
 
             serviceCollection.RegisterEndpointHostBuilder();
             serviceCollection.AddHostEndpoint<GetOTRTokenHandler>("GetOTRToken", EndpointPathInfo.GetTokenPath);
@@ -159,6 +158,9 @@ namespace OneTimeRequestToken
 
             if (options.TokenValidTime.IsNotNull())
                 OTRTAppInfo.SetTokenValidTime(options.TokenValidTime);
+
+            if (options.MaxAllowedTokenAttempt.IsNotNull() && options.MaxAllowedTokenAttempt != 0)
+                OTRTAppInfo.SetMaxAllowedTokenAttempt(options.MaxAllowedTokenAttempt);
         }
     }
 }

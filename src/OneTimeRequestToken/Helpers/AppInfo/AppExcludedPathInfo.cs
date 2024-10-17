@@ -1,12 +1,12 @@
 ﻿// ***********************************************************************
 //  Assembly         : RzR.Shared.Services.OneTimeRequestToken
 //  Author           : RzR
-//  Created On       : 2024-09-24 00:45
+//  Created On       : 2024-10-17 18:47
 // 
 //  Last Modified By : RzR
-//  Last Modified On : 2024-09-25 21:05
+//  Last Modified On : 2024-10-17 18:59
 // ***********************************************************************
-//  <copyright file="OTRTOptions.cs" company="">
+//  <copyright file="AppExcludedPathInfo.cs" company="">
 //   Copyright (c) RzR. All rights reserved.
 //  </copyright>
 // 
@@ -16,41 +16,26 @@
 
 #region U S A G E S
 
-using System;
+using DomainCommonExtensions.CommonExtensions.TypeParam;
 using System.Collections.Generic;
-
-// ReSharper disable UnusedAutoPropertyAccessor.Global
 
 #endregion
 
-namespace OneTimeRequestToken.Models
+namespace OneTimeRequestToken.Helpers.AppInfo
 {
     /// -------------------------------------------------------------------------------------------------
-    /// <summary>
-    ///     An OTRT options.
-    /// </summary>
+    /// <content>
+    ///     Information about the OTRT application.
+    /// </content>
     /// =================================================================================================
-    public class OTRTOptions
+    internal static partial class OTRTAppInfo
     {
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
-        ///     Gets or sets the name of the application.
+        ///     The excluded paths.
         /// </summary>
-        /// <value>
-        ///     The name of the application.
-        /// </value>
         /// =================================================================================================
-        public string AppName { get; set; }
-
-        /// -------------------------------------------------------------------------------------------------
-        /// <summary>
-        ///     Gets or sets the application key.
-        /// </summary>
-        /// <value>
-        ///     The application key.
-        /// </value>
-        /// =================================================================================================
-        public string AppKey { get; set; }
+        private static IEnumerable<string> _excludedPaths;
 
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
@@ -60,26 +45,29 @@ namespace OneTimeRequestToken.Models
         ///     The excluded paths.
         /// </value>
         /// =================================================================================================
-        public IEnumerable<string> ExcludedPaths { get; set; }
+        private static IEnumerable<string> ExcludedPaths
+        {
+            get => _excludedPaths.IfIsNull(new List<string>());
+            set => _excludedPaths = value;
+        }
 
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
-        ///     Gets or sets the token valid time. Default value => 5 minutes.
+        ///     Sets excluded paths.
         /// </summary>
-        /// <value>
-        ///     The token valid time.
-        /// </value>
+        /// <param name="excludePath">Full pathname of the exclude file.</param>
         /// =================================================================================================
-        public TimeSpan TokenValidTime { get; set; }
+        internal static void SetExcludedPaths(IEnumerable<string> excludePath) => ExcludedPaths = excludePath;
 
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
-        ///     Gets or sets the maximum allowed token attempt.
+        ///     Gets the excluded paths in this collection.
         /// </summary>
-        /// <value>
-        ///     The maximum allowed token attempt.
-        /// </value>
+        /// <returns>
+        ///     An enumerator that allows foreach to be used to process the excluded paths in this
+        ///     collection.
+        /// </returns>
         /// =================================================================================================
-        public short MaxAllowedTokenAttempt { get; set; }
+        internal static IEnumerable<string> GetExcludedPaths() => ExcludedPaths;
     }
 }

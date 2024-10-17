@@ -1,12 +1,12 @@
 ﻿// ***********************************************************************
 //  Assembly         : RzR.Shared.Services.OneTimeRequestToken
 //  Author           : RzR
-//  Created On       : 2024-09-24 00:45
+//  Created On       : 2024-10-17 18:39
 // 
 //  Last Modified By : RzR
-//  Last Modified On : 2024-09-25 21:05
+//  Last Modified On : 2024-10-17 18:59
 // ***********************************************************************
-//  <copyright file="OTRTOptions.cs" company="">
+//  <copyright file="AppNameInfo.cs" company="">
 //   Copyright (c) RzR. All rights reserved.
 //  </copyright>
 // 
@@ -16,70 +16,56 @@
 
 #region U S A G E S
 
-using System;
-using System.Collections.Generic;
-
-// ReSharper disable UnusedAutoPropertyAccessor.Global
+using DomainCommonExtensions.CommonExtensions.TypeParam;
 
 #endregion
 
-namespace OneTimeRequestToken.Models
+namespace OneTimeRequestToken.Helpers.AppInfo
 {
     /// -------------------------------------------------------------------------------------------------
-    /// <summary>
-    ///     An OTRT options.
-    /// </summary>
+    /// <content>
+    ///     Information about the OTRT application.
+    /// </content>
     /// =================================================================================================
-    public class OTRTOptions
+    internal static partial class OTRTAppInfo
     {
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
-        ///     Gets or sets the name of the application.
+        ///     The current application name.
         /// </summary>
-        /// <value>
-        ///     The name of the application.
-        /// </value>
         /// =================================================================================================
-        public string AppName { get; set; }
+        private static string _currentAppName;
 
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
-        ///     Gets or sets the application key.
+        ///     Gets or sets the current application name.
         /// </summary>
         /// <value>
-        ///     The application key.
+        ///     The name of the current application.
         /// </value>
         /// =================================================================================================
-        public string AppKey { get; set; }
+        private static string CurrentAppName
+        {
+            get => _currentAppName.IfIsNull("OTRT");
+            set => _currentAppName = value;
+        }
 
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
-        ///     Gets or sets the excluded paths.
+        ///     Sets current application name.
         /// </summary>
-        /// <value>
-        ///     The excluded paths.
-        /// </value>
+        /// <param name="appName">Name of the application.</param>
         /// =================================================================================================
-        public IEnumerable<string> ExcludedPaths { get; set; }
+        internal static void SetCurrentAppName(string appName) => CurrentAppName = appName;
 
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
-        ///     Gets or sets the token valid time. Default value => 5 minutes.
+        ///     Gets current application name.
         /// </summary>
-        /// <value>
-        ///     The token valid time.
-        /// </value>
+        /// <returns>
+        ///     The current application name.
+        /// </returns>
         /// =================================================================================================
-        public TimeSpan TokenValidTime { get; set; }
-
-        /// -------------------------------------------------------------------------------------------------
-        /// <summary>
-        ///     Gets or sets the maximum allowed token attempt.
-        /// </summary>
-        /// <value>
-        ///     The maximum allowed token attempt.
-        /// </value>
-        /// =================================================================================================
-        public short MaxAllowedTokenAttempt { get; set; }
+        internal static string GetCurrentAppName() => CurrentAppName;
     }
 }

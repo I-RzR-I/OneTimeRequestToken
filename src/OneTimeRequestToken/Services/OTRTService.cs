@@ -23,12 +23,11 @@ using AggregatedGenericResultMessage.Models;
 using DomainCommonExtensions.CommonExtensions;
 using DomainCommonExtensions.DataTypeExtensions;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using OneTimeRequestToken.Abstractions;
 using OneTimeRequestToken.Extensions;
 using OneTimeRequestToken.Helpers;
+using OneTimeRequestToken.Helpers.AppInfo;
 using OneTimeRequestToken.Helpers.InternalInfo;
 using OneTimeRequestToken.Models.Internal;
 using OneTimeRequestToken.Models.Result;
@@ -75,28 +74,19 @@ namespace OneTimeRequestToken.Services
 
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
-        ///     (Immutable) the memory cache.
-        /// </summary>
-        /// =================================================================================================
-        private readonly IMemoryCache _memoryCache;
-
-        /// -------------------------------------------------------------------------------------------------
-        /// <summary>
         ///     Initializes a new instance of the <see cref="OTRTService" /> class.
         /// </summary>
         /// <param name="clientBrowserInfoService">The client browser information service.</param>
-        /// <param name="serviceProvider">The service provider.</param>
         /// <param name="httpContextAccessor">The HTTP context accessor.</param>
         /// <param name="logger">The logger.</param>
         /// =================================================================================================
         public OTRTService(
-            IClientBrowserInfoService clientBrowserInfoService, IServiceProvider serviceProvider,
+            IClientBrowserInfoService clientBrowserInfoService,
             IHttpContextAccessor httpContextAccessor, ILogger<OTRTService> logger)
         {
             _clientBrowserInfoService = clientBrowserInfoService;
             _httpContextAccessor = httpContextAccessor;
             _logger = logger;
-            _memoryCache = serviceProvider.GetService<IMemoryCache>();
         }
 
         /// <inheritdoc />
@@ -107,18 +97,8 @@ namespace OneTimeRequestToken.Services
                 var encryptedToken = await BuildClientTokenAsync(requestPath, httpMethod);
                 var encryptedHeaderTokenName = await BuildClientTokenHeaderNameAsync(requestPath, httpMethod);
 
-                _memoryCache.TryGetValue(encryptedHeaderTokenName.ResultToken, out var tmpTokenValue);
-
-                if (tmpTokenValue.IsNull())
-                {
-                    _memoryCache.Set(encryptedHeaderTokenName.ResultToken, encryptedToken.ClearToken);
-                }
-                else
-                {
-                    _memoryCache.Remove(encryptedHeaderTokenName.ResultToken);
-                    _memoryCache.Set(encryptedHeaderTokenName.ResultToken, encryptedToken.ClearToken);
-                }
-
+                TokenStore.SetToken(encryptedHeaderTokenName.ResultToken, new TokenStoreInfo(encryptedToken.ClearToken));
+                
                 //Return data to client
                 return await Task.FromResult(
                     Result<GenerateTokenResult>.Success(
@@ -142,17 +122,22 @@ namespace OneTimeRequestToken.Services
                     : requestPath;
                 if (httpMethod.IsNullOrEmpty().IsFalse())
                 {
-                    var cacheToken = _memoryCache.Get<string>(token);
+                    var cacheToken = TokenStore.FindTokenValue(token);
 
                     if (cacheToken.IsNullOrEmpty().IsFalse())
                     {
+                        TokenStore.IncrementTick(token);
                         var sourceHeaderToken = token.Replace(OTRTAppInfo.GetOTRTHeaderVariableNameValue(), string.Empty)
                             .AesDecryptString(OTRTAppInfo.GetAppKey()).Split('|');
 
                         if (Convert.ToDateTime(sourceHeaderToken[0]).IsTokenValid().IsFalse())
+                        {
+                            TokenStore.ForgetToken(token);
+
                             return await Task.FromResult(Result<VerifyTokenResult>
                                 .Success(new VerifyTokenResult(false))
                                 .AddMessage(new MessageDataModel(DefaultMessagesInfo.ErrorInvalidToken)));
+                        }
 
                         var encryptedClientToken = await BuildClientTokenAsync(localRequestPath, httpMethod);
 
@@ -167,7 +152,7 @@ namespace OneTimeRequestToken.Services
                         }
 
                         //Remove from cache key
-                        _memoryCache.Remove(token);
+                        TokenStore.ForgetToken(token);
 
                         return await Task.FromResult(Result<VerifyTokenResult>
                             .Success(new VerifyTokenResult(true)));

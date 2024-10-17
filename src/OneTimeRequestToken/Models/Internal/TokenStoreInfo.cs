@@ -1,12 +1,12 @@
 ﻿// ***********************************************************************
 //  Assembly         : RzR.Shared.Services.OneTimeRequestToken
 //  Author           : RzR
-//  Created On       : 2024-09-24 00:45
+//  Created On       : 2024-10-17 15:18
 // 
 //  Last Modified By : RzR
-//  Last Modified On : 2024-09-25 21:05
+//  Last Modified On : 2024-10-17 15:18
 // ***********************************************************************
-//  <copyright file="OTRTOptions.cs" company="">
+//  <copyright file="TokenStoreInfo.cs" company="">
 //   Copyright (c) RzR. All rights reserved.
 //  </copyright>
 // 
@@ -14,72 +14,60 @@
 //  </summary>
 // ***********************************************************************
 
-#region U S A G E S
-
-using System;
-using System.Collections.Generic;
-
-// ReSharper disable UnusedAutoPropertyAccessor.Global
-
-#endregion
-
-namespace OneTimeRequestToken.Models
+// ReSharper disable ClassNeverInstantiated.Global
+// 
+namespace OneTimeRequestToken.Models.Internal
 {
     /// -------------------------------------------------------------------------------------------------
     /// <summary>
-    ///     An OTRT options.
+    ///     Information about the token store.
     /// </summary>
     /// =================================================================================================
-    public class OTRTOptions
+    internal class TokenStoreInfo
     {
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
-        ///     Gets or sets the name of the application.
+        ///     Gets or sets the ticks.
         /// </summary>
         /// <value>
-        ///     The name of the application.
+        ///     The ticks.
         /// </value>
         /// =================================================================================================
-        public string AppName { get; set; }
+        public short Ticks { get; set; }
 
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
-        ///     Gets or sets the application key.
+        ///     Gets or sets the value.
         /// </summary>
         /// <value>
-        ///     The application key.
+        ///     The value.
         /// </value>
         /// =================================================================================================
-        public string AppKey { get; set; }
+        public string Value { get; set; }
 
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
-        ///     Gets or sets the excluded paths.
+        ///     Initializes a new instance of the <see cref="TokenStoreInfo"/> class.
         /// </summary>
-        /// <value>
-        ///     The excluded paths.
-        /// </value>
+        /// <param name="ticks">The ticks.</param>
+        /// <param name="value">The value.</param>
         /// =================================================================================================
-        public IEnumerable<string> ExcludedPaths { get; set; }
+        public TokenStoreInfo(short ticks, string value)
+        {
+            Ticks = ticks;
+            Value = value;
+        }
 
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
-        ///     Gets or sets the token valid time. Default value => 5 minutes.
+        ///     Initializes a new instance of the <see cref="TokenStoreInfo"/> class.
         /// </summary>
-        /// <value>
-        ///     The token valid time.
-        /// </value>
+        /// <param name="value">The value.</param>
         /// =================================================================================================
-        public TimeSpan TokenValidTime { get; set; }
-
-        /// -------------------------------------------------------------------------------------------------
-        /// <summary>
-        ///     Gets or sets the maximum allowed token attempt.
-        /// </summary>
-        /// <value>
-        ///     The maximum allowed token attempt.
-        /// </value>
-        /// =================================================================================================
-        public short MaxAllowedTokenAttempt { get; set; }
+        public TokenStoreInfo(string value)
+        {
+            Ticks = 0;
+            Value = value;
+        }
     }
 }

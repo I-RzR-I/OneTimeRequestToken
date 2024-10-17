@@ -1,12 +1,12 @@
 ﻿// ***********************************************************************
 //  Assembly         : RzR.Shared.Services.OneTimeRequestToken
 //  Author           : RzR
-//  Created On       : 2024-09-24 00:45
+//  Created On       : 2024-10-17 18:42
 // 
 //  Last Modified By : RzR
-//  Last Modified On : 2024-09-25 21:05
+//  Last Modified On : 2024-10-17 18:59
 // ***********************************************************************
-//  <copyright file="OTRTOptions.cs" company="">
+//  <copyright file="AppHeaderInfo.cs" company="">
 //   Copyright (c) RzR. All rights reserved.
 //  </copyright>
 // 
@@ -14,72 +14,50 @@
 //  </summary>
 // ***********************************************************************
 
-#region U S A G E S
-
-using System;
-using System.Collections.Generic;
-
-// ReSharper disable UnusedAutoPropertyAccessor.Global
-
-#endregion
-
-namespace OneTimeRequestToken.Models
+namespace OneTimeRequestToken.Helpers.AppInfo
 {
     /// -------------------------------------------------------------------------------------------------
-    /// <summary>
-    ///     An OTRT options.
-    /// </summary>
+    /// <content>
+    ///     Information about the OTRT application.
+    /// </content>
     /// =================================================================================================
-    public class OTRTOptions
+    internal static partial class OTRTAppInfo
     {
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
-        ///     Gets or sets the name of the application.
+        ///     (Immutable) name of the base header token.
         /// </summary>
-        /// <value>
-        ///     The name of the application.
-        /// </value>
         /// =================================================================================================
-        public string AppName { get; set; }
+        private const string BaseHeaderTokenName = "X-XSRF-TOKEN.";
 
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
-        ///     Gets or sets the application key.
+        ///     Gets otrt header variable name.
         /// </summary>
-        /// <value>
-        ///     The application key.
-        /// </value>
+        /// <returns>
+        ///     The otrt header variable name.
+        /// </returns>
         /// =================================================================================================
-        public string AppKey { get; set; }
+        internal static string GetOTRTHeaderVariableName() => $"{BaseHeaderTokenName}{CurrentAppName}";
 
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
-        ///     Gets or sets the excluded paths.
+        ///     Gets otrt header variable name value.
         /// </summary>
-        /// <value>
-        ///     The excluded paths.
-        /// </value>
+        /// <returns>
+        ///     The otrt header variable name value.
+        /// </returns>
         /// =================================================================================================
-        public IEnumerable<string> ExcludedPaths { get; set; }
+        internal static string GetOTRTHeaderVariableNameValue() => $"{GetOTRTHeaderVariableName()}.";
 
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
-        ///     Gets or sets the token valid time. Default value => 5 minutes.
+        ///     Gets otrt header variable name value encode.
         /// </summary>
-        /// <value>
-        ///     The token valid time.
-        /// </value>
+        /// <returns>
+        ///     The otrt header variable name value encode.
+        /// </returns>
         /// =================================================================================================
-        public TimeSpan TokenValidTime { get; set; }
-
-        /// -------------------------------------------------------------------------------------------------
-        /// <summary>
-        ///     Gets or sets the maximum allowed token attempt.
-        /// </summary>
-        /// <value>
-        ///     The maximum allowed token attempt.
-        /// </value>
-        /// =================================================================================================
-        public short MaxAllowedTokenAttempt { get; set; }
+        internal static string GetOTRTHeaderVariableNameValueEnc() => $"{GetOTRTHeaderVariableName()}-";
     }
 }
