@@ -1,10 +1,10 @@
 ﻿// ***********************************************************************
 //  Assembly         : RzR.Shared.Services.OneTimeRequestToken
 //  Author           : RzR
-//  Created On       : 2024-10-14 14:14
+//  Created On       : 2024-10-18 00:14
 // 
 //  Last Modified By : RzR
-//  Last Modified On : 2024-10-14 14:14
+//  Last Modified On : 2024-10-21 00:14
 // ***********************************************************************
 //  <copyright file="VerifyTokenResult.cs" company="">
 //   Copyright (c) RzR. All rights reserved.
@@ -14,8 +14,12 @@
 //  </summary>
 // ***********************************************************************
 
+#region U S A G E S
+
 using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
+
+#endregion
 
 namespace OneTimeRequestToken.Models.Result
 {
@@ -36,12 +40,12 @@ namespace OneTimeRequestToken.Models.Result
         /// </value>
         /// =================================================================================================
         [DataMember(Name = "IsValid")]
-        [JsonPropertyName(name: "isValid")]
-        public bool IsValid { get; set; } = false;
+        [JsonPropertyName("isValid")]
+        public bool IsValid { get; set; }
 
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
-        ///     Initializes a new instance of the <see cref="VerifyTokenResult"/> class.
+        ///     Initializes a new instance of the <see cref="VerifyTokenResult" /> class.
         /// </summary>
         /// <param name="isValid">
         ///     (Optional)

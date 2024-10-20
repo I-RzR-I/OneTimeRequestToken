@@ -81,5 +81,16 @@ namespace OneTimeRequestToken.Models
         /// </value>
         /// =================================================================================================
         public short MaxAllowedTokenAttempt { get; set; }
+
+        /// -------------------------------------------------------------------------------------------------
+        /// <summary>
+        ///     Gets or sets the automatic clean invalid token.
+        /// </summary>
+        /// <value>
+        ///     The automatic clean invalid token.
+        ///     Value in minutes.
+        /// </value>
+        /// =================================================================================================
+        public double AutoCleanInvalidToken { get; set; }
     }
 }

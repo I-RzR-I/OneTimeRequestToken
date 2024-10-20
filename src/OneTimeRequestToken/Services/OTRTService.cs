@@ -21,6 +21,7 @@ using AggregatedGenericResultMessage.Abstractions;
 using AggregatedGenericResultMessage.Extensions.Result.Messages;
 using AggregatedGenericResultMessage.Models;
 using DomainCommonExtensions.CommonExtensions;
+using DomainCommonExtensions.CommonExtensions.TypeParam;
 using DomainCommonExtensions.DataTypeExtensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
@@ -34,6 +35,7 @@ using OneTimeRequestToken.Models.Result;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+// ReSharper disable PossibleInvalidOperationException
 
 #endregion
 
@@ -45,9 +47,9 @@ namespace OneTimeRequestToken.Services
     /// <summary>
     ///     A service for accessing otrt information. This class cannot be inherited.
     /// </summary>
-    /// <seealso cref="T:OneTimeRequestToken.Abstractions.IOTRTService" />
-    /// ###
-    /// <inheritdoc cref="IOTRTService" />
+    /// <seealso cref="T:OneTimeRequestToken.Abstractions.IOTRTService"/>
+    ///
+    /// ### <inheritdoc cref="IOTRTService"/>
     /// =================================================================================================
     public sealed class OTRTService : IOTRTService
     {
@@ -89,15 +91,16 @@ namespace OneTimeRequestToken.Services
             _logger = logger;
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc/>
         public async Task<IResult<GenerateTokenResult>> GenerateTokenAsync(string requestPath, string httpMethod, CancellationToken cancellationToken = default)
         {
             try
             {
-                var encryptedToken = await BuildClientTokenAsync(requestPath, httpMethod);
+                var createdUtc = DateTime.Now.AsUtc();
+                var encryptedToken = await BuildClientTokenAsync(requestPath, httpMethod, createdUtc);
                 var encryptedHeaderTokenName = await BuildClientTokenHeaderNameAsync(requestPath, httpMethod);
 
-                TokenStore.SetToken(encryptedHeaderTokenName.ResultToken, new TokenStoreInfo(encryptedToken.ClearToken));
+                TokenStore.SetToken(encryptedHeaderTokenName.ResultToken, new TokenStoreInfo(encryptedToken.ClearToken, createdUtc));
                 
                 //Return data to client
                 return await Task.FromResult(
@@ -112,7 +115,7 @@ namespace OneTimeRequestToken.Services
             }
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc/>
         public async Task<IResult<VerifyTokenResult>> ValidateTokenAsync(string token, string httpMethod, string requestPath = null, CancellationToken cancellationToken = default)
         {
             try
@@ -220,11 +223,12 @@ namespace OneTimeRequestToken.Services
         /// <exception cref="Exception">Thrown when an exception error condition occurs.</exception>
         /// <param name="requestPath">Full pathname of the request file.</param>
         /// <param name="httpMethod">The HTTP method.</param>
+        /// <param name="createdUtc">(Optional) The created UTC.</param>
         /// <returns>
         ///     The build client token.
         /// </returns>
         /// =================================================================================================
-        private async Task<TokenInfo> BuildClientTokenAsync(string requestPath, string httpMethod)
+        private async Task<TokenInfo> BuildClientTokenAsync(string requestPath, string httpMethod, DateTime? createdUtc = null)
         {
             try
             {
@@ -234,7 +238,7 @@ namespace OneTimeRequestToken.Services
                 var userIdentifierFunc = OTRTAppInfo.GetUserIdentifierFunction();
                 var userNameFunc = OTRTAppInfo.GetUserNameFunction();
 
-                var clientToken = RequestTokenHelper.BuildClientToken(DateTime.Now.AsUtc(),
+                var clientToken = RequestTokenHelper.BuildClientToken((DateTime)createdUtc.IfIsNull(DateTime.Now.AsUtc()),
                     userIdentifierFunc.IsNull() ? dayNumber : await userIdentifierFunc.Invoke(),
                     userNameFunc.IsNull() ? $"{dayNumber}#{OTRTAppInfo.GetCurrentAppName()}" : await userNameFunc.Invoke(),
                     clientInfo.ClientIp, requestPath, httpMethod, clientInfo.ClientAgent
