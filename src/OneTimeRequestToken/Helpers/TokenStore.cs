@@ -17,9 +17,12 @@
 #region U S A G E S
 
 using DomainCommonExtensions.CommonExtensions;
+using DomainCommonExtensions.DataTypeExtensions;
+using OneTimeRequestToken.Extensions;
 using OneTimeRequestToken.Helpers.AppInfo;
 using OneTimeRequestToken.Models.Internal;
 using System.Collections.Generic;
+using System.Linq;
 
 #endregion
 
@@ -126,5 +129,34 @@ namespace OneTimeRequestToken.Helpers
         /// <param name="key">The key.</param>
         /// =================================================================================================
         internal static void ForgetToken(string key) => Store.Remove(key);
+
+        /// -------------------------------------------------------------------------------------------------
+        /// <summary>
+        ///     Gets the invalid tokens in this collection.
+        /// </summary>
+        /// <returns>
+        ///     An enumerator that allows foreach to be used to process the invalid tokens in this
+        ///     collection.
+        /// </returns>
+        /// =================================================================================================
+        internal static IEnumerable<string> GetInvalidTokens()
+            => Store.Select(x => new { x.Key, x.Value.CreatedUtc })
+                .Where(x => x.CreatedUtc.IsTokenValid().IsFalse()).Select(x => x.Key);
+
+        /// -------------------------------------------------------------------------------------------------
+        /// <summary>
+        ///     Clean invalid tokens.
+        /// </summary>
+        /// =================================================================================================
+        internal static void CleanInvalidTokens()
+        {
+            if (Store.Count.IsGreaterThanZero())
+            {
+                foreach (var token in GetInvalidTokens())
+                {
+                    ForgetToken(token);
+                }
+            }
+        }
     }
 }

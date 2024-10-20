@@ -21,7 +21,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using OneTimeRequestToken.Abstractions;
 using OneTimeRequestToken.Extensions.Http;
-using OneTimeRequestToken.Helpers;
 using OneTimeRequestToken.Helpers.AppInfo;
 using OneTimeRequestToken.Helpers.InternalInfo;
 using System;

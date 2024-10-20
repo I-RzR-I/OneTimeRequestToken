@@ -1,12 +1,12 @@
 ﻿// ***********************************************************************
 //  Assembly         : RzR.Shared.Services.OneTimeRequestToken
 //  Author           : RzR
-//  Created On       : 2024-10-11 19:34
+//  Created On       : 2024-10-20 23:36
 // 
 //  Last Modified By : RzR
-//  Last Modified On : 2024-10-11 19:40
+//  Last Modified On : 2024-10-20 23:43
 // ***********************************************************************
-//  <copyright file="VerifyOTRTToken.cs" company="">
+//  <copyright file="AppAutoCleanTokensInfo.cs" company="">
 //   Copyright (c) RzR. All rights reserved.
 //  </copyright>
 // 
@@ -14,46 +14,47 @@
 //  </summary>
 // ***********************************************************************
 
-// ReSharper disable ClassNeverInstantiated.Global
-// ReSharper disable UnusedAutoPropertyAccessor.Global
+#region U S A G E S
 
-namespace OneTimeRequestToken.Models.Request
+using DomainCommonExtensions.CommonExtensions.TypeParam;
+
+#endregion
+
+namespace OneTimeRequestToken.Helpers.AppInfo
 {
     /// -------------------------------------------------------------------------------------------------
-    /// <summary>
-    ///     A verify otrt token.
-    /// </summary>
+    /// <content>
+    ///     Information about the otrt application.
+    /// </content>
     /// =================================================================================================
-    public class VerifyOTRTToken
+    internal static partial class OTRTAppInfo
     {
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
-        ///     Gets or sets the full pathname of the request file.
+        ///     Gets or sets the automatic clean interval.
         /// </summary>
         /// <value>
-        ///     The full pathname of the request file.
+        ///     The automatic clean interval.
         /// </value>
         /// =================================================================================================
-        public string RequestPath { get; set; }
+        private static double AutoCleanInterval { get; set; }
 
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
-        ///     Gets or sets the HTTP method.
+        ///     Sets automatic clean token interval.
         /// </summary>
-        /// <value>
-        ///     The HTTP method.
-        /// </value>
+        /// <param name="interval">The interval.</param>
         /// =================================================================================================
-        public string HttpMethod { get; set; }
+        internal static void SetAutoCleanTokenInterval(double interval) => AutoCleanInterval = interval;
 
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
-        ///     Gets or sets the token.
+        ///     Gets automatic clean token interval.
         /// </summary>
-        /// <value>
-        ///     The token.
-        /// </value>
+        /// <returns>
+        ///     The automatic clean token interval.
+        /// </returns>
         /// =================================================================================================
-        public string Token { get; set; }
+        internal static double GetAutoCleanTokenInterval() => AutoCleanInterval.IfIsNull(0.0);
     }
 }

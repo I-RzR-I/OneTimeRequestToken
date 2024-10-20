@@ -20,11 +20,14 @@ using DomainCommonExtensions.ArraysExtensions;
 using DomainCommonExtensions.CommonExtensions;
 using DomainCommonExtensions.DataTypeExtensions;
 using EndpointHostBinder;
+using MethodScheduler.Helpers;
+using MethodScheduler.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using OneTimeRequestToken.Abstractions;
 using OneTimeRequestToken.Endpoints.GetOTRToken;
 using OneTimeRequestToken.Endpoints.VerifyOTRTToken;
+using OneTimeRequestToken.Helpers;
 using OneTimeRequestToken.Helpers.AppInfo;
 using OneTimeRequestToken.Helpers.InternalInfo;
 using OneTimeRequestToken.Middleware;
@@ -115,7 +118,8 @@ namespace OneTimeRequestToken
         ///     An IServiceCollection.
         /// </returns>
         /// =================================================================================================
-        private static IServiceCollection RegisterBaseServices(this IServiceCollection serviceCollection, Action<OTRTOptions> serviceOptions)
+        private static IServiceCollection RegisterBaseServices(this IServiceCollection serviceCollection,
+            Action<OTRTOptions> serviceOptions)
         {
             StoreServiceKeys(serviceOptions);
 
@@ -127,6 +131,19 @@ namespace OneTimeRequestToken
 
             serviceCollection.AddUnique<IClientBrowserInfoService, ClientBrowserInfoService>();
             serviceCollection.AddUnique<IOTRTService, OTRTService>();
+
+            if (OTRTAppInfo.GetAutoCleanTokenInterval() > 0)
+            {
+                MultipleScheduler.Instance.Start(
+                    TokenStore.CleanInvalidTokens,
+                    new SchedulerSettings()
+                    {
+                        DisableOnFailure = false,
+                        ThrowException = false,
+                        SuccessInterval = OTRTAppInfo.GetAutoCleanTokenInterval(),
+                        FailInterval = 10
+                    });
+            }
 
             return serviceCollection;
         }
@@ -161,6 +178,9 @@ namespace OneTimeRequestToken
 
             if (options.MaxAllowedTokenAttempt.IsNotNull() && options.MaxAllowedTokenAttempt != 0)
                 OTRTAppInfo.SetMaxAllowedTokenAttempt(options.MaxAllowedTokenAttempt);
+
+            if (options.AutoCleanInvalidToken.IsNotNull() && options.AutoCleanInvalidToken > 0)
+                OTRTAppInfo.SetAutoCleanTokenInterval(options.AutoCleanInvalidToken);
         }
     }
 }
