@@ -1,0 +1,40 @@
+# Test base api
+GET http://localhost:5000/weatherforecast
+
+###
+
+# Test token endpoint
+@requestPath = /user/edit/1
+@httpMethod = GET
+GET http://localhost:5000/otrt/token?requestPath={{requestPath}}&httpMethod={{httpMethod}}
+
+###
+
+# Test token endpoint with json response
+@requestPath = /user/edit/1
+@httpMethod = GET
+GET http://localhost:5000/otrt/token?requestPath={{requestPath}}&httpMethod={{httpMethod}}
+
+###
+
+# Test token endpoint with XML response
+@requestPath = /user/edit/1
+@httpMethod = GET
+GET http://localhost:5000/otrt/token?requestPath={{requestPath}}&httpMethod={{httpMethod}}
+Accept: application/xml
+
+###
+
+# 
+@requestPath = /user/edit/1
+@httpMethod = POST
+GET http://localhost:5000/otrt/token?requestPath={{requestPath}}&httpMethod={{httpMethod}}
+Accept: application/json
+
+###
+
+# 
+POST http://localhost:5000/user/edit/1
+X-XSRF-TOKEN.MyApp:X-XSRF-TOKEN.MyApp.ytigjDNmEKTKlpo9GutI9bbdyrzeqonGJFOFWXCg2ZSjDj0QrkLX+x9IZp+w1jeuLyVtVJMgZQuJwMQs5oOQTw==
+
+###
