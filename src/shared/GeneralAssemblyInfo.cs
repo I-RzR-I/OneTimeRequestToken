@@ -31,7 +31,7 @@ using System.Resources;
 [assembly: AssemblyProduct("OneTimeRequestToken")]
 [assembly: AssemblyCopyright("Copyright © 2022-2024 RzR All rights reserved.")]
 [assembly: AssemblyTrademark("® RzR™")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Provide a simple solution to protect the application endpoint from untrusted or unwanted requests by supplying every invoked endpoint with a generated security code.")]
 
 [assembly: AssemblyMetadata("TermsOfService", "")]
 [assembly: AssemblyMetadata("ContactUrl", "")]
