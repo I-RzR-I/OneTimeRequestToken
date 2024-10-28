@@ -17,6 +17,7 @@ public void ConfigureServices(IServiceCollection services)
                 o.AppKey = "***"; //Application token encryption key
                 o.TokenValidTime = TimeSpan.FromSeconds(60); // Token alive time
                 o.ExcludedPaths = new string[] { "/path1", "/path2" }; // List of excluded paths from validation
+                o.AutoCleanInvalidToken = 5.0; // Time to auto clean invalid tokens
             }
         );
         
@@ -24,14 +25,26 @@ public void ConfigureServices(IServiceCollection services)
 }
 ```
 
-The next step is to add middleware using in the `Configure` method:
+The next step is to add middleware and endpoints using in the `Configure` method:
 
 ```csharp
 public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
 {
     // ...
     
-    app.UseOTRTMiddleware();
+    app.UseOTRTEndpointsAndMiddleware();
+    
+    // ...
+}
+```
+or use only endpoints
+
+```csharp
+public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+{
+    // ...
+    
+    app.UseOTRTEndpoints();
     
     // ...
 }
@@ -42,7 +55,8 @@ On the service registration, step is available a few parameters which can be sup
  -> `AppName` - Current application name/code; <br />
  -> `AppKey` - Token encryption token key; <br />
  -> `ExcludedPaths` -  List of paths which will be excluded from validation; <br />
- -> `TokenValidTime` - Token lifetime, the default value is 5 minutes.
+ -> `TokenValidTime` - Token lifetime, the default value is 5 minutes; <br />
+ -> `AutoCleanInvalidToken` - Time in minutes to auto clean/remove invalid tokens.
  
  Once the service is registered, in your application will be available 2 endpoints: `/otrt/token`, and `/otrt/verify-token`.
  
