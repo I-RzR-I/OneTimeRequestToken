@@ -52,7 +52,7 @@ namespace OneTimeRequestToken
     {
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
-        ///     An IServiceCollection extension method that registers the otrt service.
+        ///     An IServiceCollection extension method that registers the OTRT service.
         /// </summary>
         /// <param name="serviceCollection">The serviceCollection to act on.</param>
         /// <param name="serviceOptions">Options for controlling the service.</param>
@@ -71,7 +71,7 @@ namespace OneTimeRequestToken
 
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
-        ///     An IServiceCollection extension method that registers the otrt service.
+        ///     An IServiceCollection extension method that registers the OTRT service.
         /// </summary>
         /// <param name="serviceCollection">The serviceCollection to act on.</param>
         /// <param name="serviceOptions">Options for controlling the service.</param>
@@ -93,17 +93,33 @@ namespace OneTimeRequestToken
 
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
-        ///     An IApplicationBuilder extension method that use otrt middleware.
+        ///     An IApplicationBuilder extension method that use OTRT endpoints and middleware.
         /// </summary>
         /// <param name="applicationBuilder">The applicationBuilder to act on.</param>
         /// <returns>
         ///     An IApplicationBuilder.
         /// </returns>
         /// =================================================================================================
-        public static IApplicationBuilder UseOTRTMiddleware(this IApplicationBuilder applicationBuilder)
+        public static IApplicationBuilder UseOTRTEndpointsAndMiddleware(this IApplicationBuilder applicationBuilder)
         {
             applicationBuilder.UseEndpointHostBuilder();
             applicationBuilder.UseMiddleware<OTRTMiddleware>();
+
+            return applicationBuilder;
+        }
+
+        /// -------------------------------------------------------------------------------------------------
+        /// <summary>
+        ///     An IApplicationBuilder extension method that use OTRT endpoints.
+        /// </summary>
+        /// <param name="applicationBuilder">The applicationBuilder to act on.</param>
+        /// <returns>
+        ///     An IApplicationBuilder.
+        /// </returns>
+        /// =================================================================================================
+        public static IApplicationBuilder UseOTRTEndpoints(this IApplicationBuilder applicationBuilder)
+        {
+            applicationBuilder.UseEndpointHostBuilder();
 
             return applicationBuilder;
         }

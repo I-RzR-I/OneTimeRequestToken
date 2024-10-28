@@ -11,14 +11,14 @@
     <NoWarn>$(NoWarn);CS8032</NoWarn>
     <EnableNETAnalyzers>false</EnableNETAnalyzers>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <PackageTags></PackageTags>
+    <PackageTags>HTTP;Source;Code;Token;Endpoint;Protect;Antiforgery;Protect;Solution;OTRT</PackageTags>
     <RepositoryUrl>https://github.com/I-RzR-I/OneTimeRequestToken</RepositoryUrl>
     <PackageProjectUrl>https://github.com/I-RzR-I/OneTimeRequestToken</PackageProjectUrl>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <PackageDescription></PackageDescription>
-    <Summary></Summary>
-    <PackageTitle>RzR.Shared.Services (OneTimeRequestToken)</PackageTitle>
-    <Title>RzR.Shared.Services (OneTimeRequestToken)</Title>
+    <PackageDescription>Provide a simple solution to protect the application endpoint from untrusted or unwanted requests by supplying every invoked endpoint with a generated security code.</PackageDescription>
+    <Summary>Provide a simple solution to protect the application endpoint from untrusted or unwanted requests by supplying every invoked endpoint with a generated security code.</Summary>
+    <PackageTitle>RzR.Shared.Services (OneTimeRequestToken-OTRT)</PackageTitle>
+    <Title>RzR.Shared.Services (OneTimeRequestToken-OTRT)</Title>
     <LangVersion>9.0</LangVersion>
     <Language>en-US</Language>
     <RepositoryType>GIT</RepositoryType>
