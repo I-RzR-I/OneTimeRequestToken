@@ -28,14 +28,14 @@ namespace OneTimeRequestToken.Helpers.InternalInfo
         ///     (Immutable) the error on token validation.
         /// </summary>
         /// =================================================================================================
-        internal const string ErrorOnTokenValidation = "An error occurred on one time request token validation!";
+        internal const string ErrorOnTokenValidation = "An error occurred on OTRT validation!";
 
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     (Immutable) the error on token generation.
         /// </summary>
         /// =================================================================================================
-        internal const string ErrorOnTokenGeneration = "An error occurred on one time request token generation!";
+        internal const string ErrorOnTokenGeneration = "An error occurred on OTRT generation!";
 
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
@@ -49,41 +49,41 @@ namespace OneTimeRequestToken.Helpers.InternalInfo
         ///     (Immutable) the error token not found.
         /// </summary>
         /// =================================================================================================
-        internal const string ErrorTokenNotFound = "For current request, the validation token was not found!";
+        internal const string ErrorTokenNotFound = "For current request, the validation token (OTRT) was not found!";
 
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     (Immutable) the error invalid token.
         /// </summary>
         /// =================================================================================================
-        internal const string ErrorInvalidToken = "The token is invalid!";
+        internal const string ErrorInvalidToken = "The token (OTRT) is invalid!";
 
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     (Immutable) information describing the error invalid token.
         /// </summary>
         /// =================================================================================================
-        internal const string ErrorInvalidTokenData = "Invalid token data! Try to get a new one!";
+        internal const string ErrorInvalidTokenData = "Invalid token (OTRT) data! Try to get a new one!";
 
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     (Immutable) the error on build header token.
         /// </summary>
         /// =================================================================================================
-        internal const string ErrorOnBuildHeaderToken = "An error occurred on generate/build token header!";
+        internal const string ErrorOnBuildHeaderToken = "An error occurred on generate/build token (OTRT) header!";
 
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     (Immutable) the error on build client token.
         /// </summary>
         /// =================================================================================================
-        internal const string ErrorOnBuildClientToken = "An error occurred on generate/build token client!";
+        internal const string ErrorOnBuildClientToken = "An error occurred on generate/build token (OTRT) client!";
 
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
         ///     (Immutable) the error on invoke token valid handler.
         /// </summary>
         /// =================================================================================================
-        internal const string ErrorOnInvokeTokenValidHandler = "An error occurred on initialize token validation handler!";
+        internal const string ErrorOnInvokeTokenValidHandler = "An error occurred on initialize token (OTRT) validation handler!";
     }
 }
