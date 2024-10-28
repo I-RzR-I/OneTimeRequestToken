@@ -5,11 +5,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace OTRTWebApiIntegration.Controllers
+namespace OTRTIntegrationNoMw.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class WeatherForecastController : ControllerBase
+    public class WeatherForecastController
     {
         private static readonly string[] Summaries = new[]
         {
@@ -32,7 +32,7 @@ namespace OTRTWebApiIntegration.Controllers
             })
             .ToArray();
         }
-
+        
         [HttpPost]
         public bool SendData([FromBody] SendDataDto data)
         {

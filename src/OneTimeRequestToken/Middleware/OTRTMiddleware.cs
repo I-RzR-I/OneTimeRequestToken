@@ -16,6 +16,7 @@
 
 #region U S A G E S
 
+using AggregatedGenericResultMessage;
 using DomainCommonExtensions.DataTypeExtensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
@@ -99,7 +100,7 @@ namespace OneTimeRequestToken.Middleware
                     var excludedPaths = new List<string>() { EndpointPathInfo.GetTokenPath, EndpointPathInfo.VerifyTokenPath };
                     // Add user defined endpoints to the excluded paths
                     excludedPaths.AddRange(OTRTAppInfo.GetExcludedPaths());
-                    
+
                     var isInExcluded = excludedPaths.Any(x => x.StartsWith(context.Request.Path.Value!));
                     if (isInExcluded.Equals(false))
                     {
@@ -108,10 +109,22 @@ namespace OneTimeRequestToken.Middleware
                             var isValid = await _otrtService.ValidateTokenAsync(xsrfToken, context.Request.Method);
                             if (isValid.IsSuccess.IsFalse() || isValid.Response.IsValid.IsFalse())
                             {
-                                await context.ResponseWithBadRequestAsync(isValid.GetFirstMessage()).ConfigureAwait(false);
+                                await context.WriteResponseAsync(
+                                    Result.Failure(isValid.GetFirstMessage()),
+                                    StatusCodes.Status400BadRequest
+                                    ).ConfigureAwait(false);
 
                                 return;
                             }
+                        }
+                        else
+                        {
+                            await context.WriteResponseAsync(
+                                Result.Failure(DefaultMessagesInfo.ErrorInvalidToken),
+                                StatusCodes.Status400BadRequest
+                            ).ConfigureAwait(false);
+
+                            return;
                         }
                     }
                 }

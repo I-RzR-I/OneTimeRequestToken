@@ -192,7 +192,8 @@ namespace OneTimeRequestToken.Extensions.Http
         /// =================================================================================================
         internal static async Task WriteResponseAsync(this HttpContext context, object data, int statusCode = 200, string contentType = null)
         {
-            var isAcceptJsonResult = (context.Request.Headers["Accept"].ToString() ?? string.Empty).ToLower().Contains(AppContentTypeInfo.LikeJson);
+            var isAcceptJsonResult = (context.Request.Headers["Accept"].ToString() ?? string.Empty).ToLower().Contains(AppContentTypeInfo.LikeJson)
+                                     || (context.Request.Headers["Content-Type"].ToString() ?? string.Empty).ToLower().Contains(AppContentTypeInfo.LikeJson);
             //context.Response.ClearResponse();
             context.SetAccessControlAllowOrigin();
 
@@ -215,7 +216,9 @@ namespace OneTimeRequestToken.Extensions.Http
         /// =================================================================================================
         internal static async Task WriteResponseAsync(this HttpContext context, IResult data, string contentType = null)
         {
-            var isAcceptJsonResult = (context.Request.Headers["Accept"].ToString() ?? string.Empty).ToLower().Contains(AppContentTypeInfo.LikeJson);
+            var isAcceptJsonResult = (context.Request.Headers["Accept"].ToString() ?? string.Empty).ToLower().Contains(AppContentTypeInfo.LikeJson)
+                                     || (context.Request.Headers["Content-Type"].ToString() ?? string.Empty).ToLower().Contains(AppContentTypeInfo.LikeJson);
+
             var statusCode = data.IsSuccess ? StatusCodes.Status204NoContent : StatusCodes.Status400BadRequest;
 
             //context.Response.ClearResponse();
@@ -240,7 +243,8 @@ namespace OneTimeRequestToken.Extensions.Http
         /// =================================================================================================
         internal static async Task WriteResponseAsync<T>(this HttpContext context, IResult<T> data, string contentType = null)
         {
-            var isAcceptJsonResult = (context.Request.Headers["Accept"].ToString() ?? string.Empty).ToLower().Contains(AppContentTypeInfo.LikeJson);
+            var isAcceptJsonResult = (context.Request.Headers["Accept"].ToString() ?? string.Empty).ToLower().Contains(AppContentTypeInfo.LikeJson)
+                                     || (context.Request.Headers["Content-Type"].ToString() ?? string.Empty).ToLower().Contains(AppContentTypeInfo.LikeJson);
             var statusCode = data.IsSuccess ? StatusCodes.Status200OK : StatusCodes.Status400BadRequest;
 
             //context.Response.ClearResponse();

@@ -18,6 +18,7 @@
 
 using AggregatedGenericResultMessage;
 using AggregatedGenericResultMessage.Abstractions;
+using AggregatedGenericResultMessage.Enums;
 using AggregatedGenericResultMessage.Extensions.Result.Messages;
 using AggregatedGenericResultMessage.Models;
 using DomainCommonExtensions.CommonExtensions;
@@ -163,7 +164,7 @@ namespace OneTimeRequestToken.Services
 
                     return await Task.FromResult(Result<VerifyTokenResult>
                         .Success(new VerifyTokenResult(false))
-                        .AddMessage(new MessageDataModel(DefaultMessagesInfo.ErrorTokenNotFound)));
+                        .AddMessage(new MessageDataModel(DefaultMessagesInfo.ErrorTokenNotFound), MessageType.NotFound));
                 }
 
                 return await Task.FromResult(Result<VerifyTokenResult>
