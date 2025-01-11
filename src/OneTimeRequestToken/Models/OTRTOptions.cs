@@ -54,6 +54,16 @@ namespace OneTimeRequestToken.Models
 
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
+        ///     Gets or sets the application key initialize vector.
+        /// </summary>
+        /// <value>
+        ///     The application key initialize vector.
+        /// </value>
+        /// =================================================================================================
+        public byte[] AppKeyInitVector { get; set; }
+
+        /// -------------------------------------------------------------------------------------------------
+        /// <summary>
         ///     Gets or sets the excluded paths.
         /// </summary>
         /// <value>
@@ -87,8 +97,7 @@ namespace OneTimeRequestToken.Models
         ///     Gets or sets the automatic clean invalid token.
         /// </summary>
         /// <value>
-        ///     The automatic clean invalid token.
-        ///     Value in minutes.
+        ///     The automatic clean invalid token. Value in minutes.
         /// </value>
         /// =================================================================================================
         public double AutoCleanInvalidToken { get; set; }

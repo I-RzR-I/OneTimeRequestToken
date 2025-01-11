@@ -181,7 +181,11 @@ namespace OneTimeRequestToken
             if (options.AppKey.IsNullOrEmpty())
                 throw new ArgumentNullException(nameof(options.AppKey));
 
+            if (options.AppKeyInitVector.IsNull())
+                throw new ArgumentNullException(nameof(options.AppKeyInitVector));
+
             OTRTAppInfo.SetAppKey(options.AppKey);
+            OTRTAppInfo.SetAppKeyInitVector(options.AppKeyInitVector);
 
             if (options.AppName.IsNullOrEmpty().IsFalse())
                 OTRTAppInfo.SetCurrentAppName(options.AppName);

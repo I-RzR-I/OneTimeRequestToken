@@ -132,7 +132,7 @@ namespace OneTimeRequestToken.Services
                     {
                         TokenStore.IncrementTick(token);
                         var sourceHeaderToken = token.Replace(OTRTAppInfo.GetOTRTHeaderVariableNameValue(), string.Empty)
-                            .AesDecryptString(OTRTAppInfo.GetAppKey()).Split('|');
+                            .AesDecryptString(OTRTAppInfo.GetAppKey(), OTRTAppInfo.GetAppKeyInitVector()).Split('|');
 
                         if (Convert.ToDateTime(sourceHeaderToken[0]).IsTokenValid().IsFalse())
                         {
@@ -145,8 +145,8 @@ namespace OneTimeRequestToken.Services
 
                         var encryptedClientToken = await BuildClientTokenAsync(localRequestPath, httpMethod);
 
-                        var cachedTokenDecrypt = cacheToken.AesDecryptString(OTRTAppInfo.GetAppKey()).Split('|');
-                        var tokenDataDecrypt = encryptedClientToken.ClearToken.AesDecryptString(OTRTAppInfo.GetAppKey()).Split('|');
+                        var cachedTokenDecrypt = cacheToken.AesDecryptString(OTRTAppInfo.GetAppKey(), OTRTAppInfo.GetAppKeyInitVector()).Split('|');
+                        var tokenDataDecrypt = encryptedClientToken.ClearToken.AesDecryptString(OTRTAppInfo.GetAppKey(), OTRTAppInfo.GetAppKeyInitVector()).Split('|');
 
                         if (RequestTokenHelper.IsValidRequest(cachedTokenDecrypt, tokenDataDecrypt, sourceHeaderToken).IsFalse())
                         {
@@ -204,7 +204,7 @@ namespace OneTimeRequestToken.Services
                     userIdentifierFunc.IsNull() ? dayNumber : await userIdentifierFunc.Invoke(),
                     clientInfo.ClientIp, requestPath, httpMethod, clientInfo.ClientAgent);
 
-                var encryptToken = clientToken.AesEncryptString(OTRTAppInfo.GetAppKey());
+                var encryptToken = clientToken.AesEncryptString(OTRTAppInfo.GetAppKey(), OTRTAppInfo.GetAppKeyInitVector());
                 var headerToken = $"{OTRTAppInfo.GetOTRTHeaderVariableNameValue()}{encryptToken}"; //.TruncateExactLength(dayNumber)
 
                 return new TokenInfo(encryptToken, headerToken);
@@ -245,7 +245,7 @@ namespace OneTimeRequestToken.Services
                     clientInfo.ClientIp, requestPath, httpMethod, clientInfo.ClientAgent
                 );
 
-                var encryptToken = clientToken.AesEncryptString(OTRTAppInfo.GetAppKey());
+                var encryptToken = clientToken.AesEncryptString(OTRTAppInfo.GetAppKey(), OTRTAppInfo.GetAppKeyInitVector());
                 var clientEncToken = $"{OTRTAppInfo.GetOTRTHeaderVariableNameValueEnc()}{encryptToken}";
 
                 return new TokenInfo(encryptToken, clientEncToken);

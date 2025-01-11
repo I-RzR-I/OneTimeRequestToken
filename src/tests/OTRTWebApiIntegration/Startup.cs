@@ -22,6 +22,8 @@ namespace OTRTWebApiIntegration
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            var iv = new byte[16];
+            new Random().NextBytes(iv);
 
             services.RegisterOTRTService(
                 o =>
@@ -29,8 +31,8 @@ namespace OTRTWebApiIntegration
                     o.AppName = "MyApp";
                     o.AppKey = "b1dopkrepomvrtio523fvrhyse543f36";
                     o.TokenValidTime = TimeSpan.FromSeconds(30);
-                }
-                );
+                    o.AppKeyInitVector = iv;
+                });
 
             services.AddSwaggerGen(c =>
             {
