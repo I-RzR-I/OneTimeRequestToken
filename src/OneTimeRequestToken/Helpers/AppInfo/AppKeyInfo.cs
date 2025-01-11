@@ -35,6 +35,16 @@ namespace OneTimeRequestToken.Helpers.AppInfo
 
         /// -------------------------------------------------------------------------------------------------
         /// <summary>
+        ///     Gets or sets the application key initialize vector.
+        /// </summary>
+        /// <value>
+        ///     The application key initialize vector.
+        /// </value>
+        /// =================================================================================================
+        private static byte[] AppKeyInitVector { get; set; }
+
+        /// -------------------------------------------------------------------------------------------------
+        /// <summary>
         ///     Sets application key.
         /// </summary>
         /// <param name="appKey">The application key.</param>
@@ -50,5 +60,23 @@ namespace OneTimeRequestToken.Helpers.AppInfo
         /// </returns>
         /// =================================================================================================
         internal static string GetAppKey() => AppKey;
+
+        /// -------------------------------------------------------------------------------------------------
+        /// <summary>
+        ///     Sets application key initialization vector.
+        /// </summary>
+        /// <param name="iv">The application key initialization vector.</param>
+        /// =================================================================================================
+        internal static void SetAppKeyInitVector(byte[] iv) => AppKeyInitVector = iv;
+
+        /// -------------------------------------------------------------------------------------------------
+        /// <summary>
+        ///     Gets application key initialization vector.
+        /// </summary>
+        /// <returns>
+        ///     The application key.
+        /// </returns>
+        /// =================================================================================================
+        internal static byte[] GetAppKeyInitVector() => AppKeyInitVector;
     }
 }

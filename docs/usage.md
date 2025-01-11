@@ -15,6 +15,7 @@ public void ConfigureServices(IServiceCollection services)
             {
                 o.AppName = "***"; //Current application code
                 o.AppKey = "***"; //Application token encryption key
+                o.AppKeyInitVector = new byte[16]; // The token encryption  initialization vector
                 o.TokenValidTime = TimeSpan.FromSeconds(60); // Token alive time
                 o.ExcludedPaths = new string[] { "/path1", "/path2" }; // List of excluded paths from validation
                 o.AutoCleanInvalidToken = 5.0; // Time to auto clean invalid tokens
@@ -54,6 +55,7 @@ On the service registration, step is available a few parameters which can be sup
 
  -> `AppName` - Current application name/code; <br />
  -> `AppKey` - Token encryption token key; <br />
+ -> `AppKeyInitVector`- The token encryption initialization vector; <br />
  -> `ExcludedPaths` -  List of paths which will be excluded from validation; <br />
  -> `TokenValidTime` - Token lifetime, the default value is 5 minutes; <br />
  -> `AutoCleanInvalidToken` - Time in minutes to auto clean/remove invalid tokens.
